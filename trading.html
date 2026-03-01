@@ -1,231 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB Advanced Execution Engine</title>
-    <style>
-        :root {
-            --bg: #0d1117;
-            --card-bg: #161b22;
-            --accent: #00ff88;
-            --loss: #ff4444;
-            --text: #c9d1d9;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dbautomaters Trading</title>
+  <style>
+    /* ===== Dark Theme ===== */
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+    /* ===== Header ===== */
+    header {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+    }
 
-        /* Stats Dashboard */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            padding: 15px;
-            background: #010409;
-            border-bottom: 1px solid #30363d;
-        }
+    /* Dbautomaters name in pill shape */
+    .logo {
+      background: linear-gradient(to right, #ff0000, #0000ff);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      animation: bounce 2s infinite;
+    }
 
-        .stat-card {
-            background: var(--card-bg);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #30363d;
-            text-align: center;
-        }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
 
-        .stat-label { font-size: 11px; color: #8b949e; text-transform: uppercase; margin-bottom: 5px; }
-        .stat-value { font-size: 18px; font-weight: bold; color: var(--accent); }
+    /* ===== Buttons ===== */
+    .button {
+      display: inline-block;
+      padding: 12px 25px;
+      margin: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 15px; /* Rounded edges */
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #ffff00; /* Yellow text */
+      background-color: #0000ff; /* Blue background */
+      box-shadow: 0 0 10px #0000ff;
+    }
 
-        /* Execution Terminal */
-        #journal {
-            flex-grow: 1;
-            background: #000;
-            color: #00ff41;
-            font-family: 'Consolas', 'Monaco', monospace;
-            padding: 15px;
-            overflow-y: auto;
-            font-size: 13px;
-            line-height: 1.5;
-            border: 5px solid #161b22;
-        }
+    .button:hover {
+      box-shadow: 0 0 20px #ffff00;
+      background-color: #1a1aff;
+      color: #ffff00;
+      border-color: #ffff00;
+    }
 
-        /* Control Panel */
-        .controls {
-            background: var(--card-bg);
-            padding: 20px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border-top: 1px solid #30363d;
-        }
+    /* ===== Trading Container ===== */
+    .trading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
 
-        input {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-            width: 80px;
-        }
+    .trade-section {
+      background-color: #1e1e1e;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
 
-        .btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-start { background: var(--accent); color: #000; }
-        .btn-stop { background: var(--loss); color: white; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .log-error { color: var(--loss); font-weight: bold; }
-        .log-win { color: var(--accent); }
-    </style>
+    .trade-section h2 {
+      margin-bottom: 15px;
+      color: #00ffff; /* Cyan headings for contrast */
+    }
+  </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="stat-card">
-            <div class="stat-label">Wallet Balance</div>
-            <div id="ui-balance" class="stat-value">$0.75</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Net Profit</div>
-            <div id="ui-profit" class="stat-value">$0.00</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Win Rate</div>
-            <div id="ui-winrate" class="stat-value">0%</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Next Stake</div>
-            <div id="ui-next-stake" class="stat-value" style="color:#f1c40f">$0.35</div>
-        </div>
+  <header>
+    <div class="logo">Dbautomaters</div>
+  </header>
+
+  <div class="trading-container">
+    
+    <div class="trade-section">
+      <h2>Deriv Trade</h2>
+      <button class="button">Buy</button>
+      <button class="button">Sell</button>
+      <button class="button">Stop Loss</button>
+      <button class="button">Take Profit</button>
     </div>
 
-    <div id="journal">> Initializing DB Engine v3.0...<br>> Ready for Tick Stream.</div>
-
-    <div class="controls">
-        <div>
-            <label class="stat-label">Stake</label><br>
-            <input type="number" id="stake-input" value="0.35" step="0.01">
-        </div>
-        <div>
-            <label class="stat-label">Martingale</label><br>
-            <input type="number" id="martingale-input" value="2.1">
-        </div>
-        <button id="start-btn" class="btn btn-start" onclick="toggleBot(true)">START BOT</button>
-        <button id="stop-btn" class="btn btn-stop" onclick="toggleBot(false)" disabled>STOP</button>
+    <div class="trade-section">
+      <h2>Account Info</h2>
+      <button class="button">Deposit</button>
+      <button class="button">Withdraw</button>
+      <button class="button">Balance</button>
     </div>
 
-    <script>
-        // --- DATA & STATE ---
-        let botActive = false;
-        let stats = {
-            balance: 0.75,
-            initialStake: 0.35,
-            currentStake: 0.35,
-            multiplier: 2.1,
-            wins: 0,
-            losses: 0,
-            profit: 0
-        };
+  </div>
 
-        const journal = document.getElementById('journal');
-
-        function writeLog(text, type = 'info') {
-            const time = new Date().toLocaleTimeString();
-            let className = '';
-            if (type === 'error') className = 'log-error';
-            if (type === 'win') className = 'log-win';
-            
-            journal.innerHTML += `<div class="${className}">[${time}] ${text}</div>`;
-            journal.scrollTop = journal.scrollHeight;
-        }
-
-        function toggleBot(active) {
-            botActive = active;
-            document.getElementById('start-btn').disabled = active;
-            document.getElementById('stop-btn').disabled = !active;
-            
-            if (active) {
-                stats.initialStake = parseFloat(document.getElementById('stake-input').value);
-                stats.multiplier = parseFloat(document.getElementById('martingale-input').value);
-                stats.currentStake = stats.initialStake;
-                writeLog("Bot Started. Monitoring Volatility 10 (1s) Index...");
-                runTradeLoop();
-            } else {
-                writeLog("Bot Stopped by User.", "error");
-            }
-        }
-
-        async function runTradeLoop() {
-            if (!botActive) return;
-
-            // 1. SAFETY CHECK (Crucial for $0.75 Balance)
-            if (stats.balance < stats.currentStake) {
-                writeLog(`CRITICAL: Next stake ($${stats.currentStake.toFixed(2)}) exceeds balance ($${stats.balance.toFixed(2)}).`, "error");
-                writeLog("Stopping bot to preserve remaining funds.", "error");
-                toggleBot(false);
-                return;
-            }
-
-            writeLog(`Executing Trade: Stake $${stats.currentStake.toFixed(2)}`);
-            
-            // 2. SIMULATE API CALL (Replace with your actual API call)
-            // Example: api.buyContract(stats.currentStake, 'CALL')
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating trade duration
-            
-            const isWin = Math.random() > 0.55; // Logic placeholder
-            processTradeResult(isWin);
-
-            // 3. LOOP DELAY (Wait for next tick)
-            if (botActive) {
-                setTimeout(runTradeLoop, 1000);
-            }
-        }
-
-        function processTradeResult(isWin) {
-            if (isWin) {
-                stats.wins++;
-                let winAmount = stats.currentStake * 0.95; // 95% payout
-                stats.profit += winAmount;
-                stats.balance += winAmount;
-                stats.currentStake = stats.initialStake; // Reset Martingale
-                writeLog(`RESULT: WIN (+$${winAmount.toFixed(2)})`, "win");
-            } else {
-                stats.losses++;
-                stats.profit -= stats.currentStake;
-                stats.balance -= stats.currentStake;
-                stats.currentStake = stats.currentStake * stats.multiplier; // Apply Martingale
-                writeLog(`RESULT: LOSS (-$${(stats.currentStake/stats.multiplier).toFixed(2)})`, "error");
-            }
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('ui-balance').innerText = `$${stats.balance.toFixed(2)}`;
-            document.getElementById('ui-profit').innerText = `$${stats.profit.toFixed(2)}`;
-            document.getElementById('ui-next-stake').innerText = `$${stats.currentStake.toFixed(2)}`;
-            
-            let total = stats.wins + stats.losses;
-            let winRate = total > 0 ? (stats.wins / total) * 100 : 0;
-            document.getElementById('ui-winrate').innerText = `${winRate.toFixed(1)}%`;
-            
-            // Color profit UI
-            document.getElementById('ui-profit').style.color = stats.profit >= 0 ? '#00ff88' : '#ff4444';
-        }
-    </script>
 </body>
 </html>
