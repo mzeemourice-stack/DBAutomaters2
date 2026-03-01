@@ -3,124 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBAutomaters | Institutional Trading Systems</title>
+    <title>DB EA Terminal | Institutional Access</title>
     <style>
         :root { 
             --neon-yellow: #fefe00;
-            --neon-blue: #00d2ff;
             --dark-bg: #050505;
-            --card-bg: #0d0d0d;
         }
 
         body {
             margin: 0;
-            padding: 0;
             background: var(--dark-bg);
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
         }
 
-        /* Subtle Background Mesh for "Tech" feel */
-        body::before {
-            content: "";
-            position: absolute;
-            width: 100%; height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(254, 254, 0, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 210, 255, 0.05) 0%, transparent 40%);
-            z-index: -1;
-        }
-
-        .container { text-align: center; z-index: 1; }
-
-        /* THE YELLOW GLOWING PILL (Matching the Terminal) */
-        .main-logo {
-            display: inline-block;
-            padding: 12px 30px;
+        /* 1. THE MAIN BRAND PILL (LOGO) */
+        .brand-pill {
+            padding: 15px 40px;
             border: 2px solid var(--neon-yellow);
             border-radius: 50px;
             color: var(--neon-yellow);
             font-weight: 900;
-            font-size: 2rem;
-            letter-spacing: 3px;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
             background: rgba(254, 254, 0, 0.05);
-            box-shadow: 0 0 20px rgba(254, 254, 0, 0.3);
-            margin-bottom: 20px;
-            animation: float 4s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(254, 254, 0, 0.4);
+            margin-bottom: 25px;
+            animation: hoverAnim 3s infinite ease-in-out;
+            cursor: default;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); box-shadow: 0 0 20px rgba(254, 254, 0, 0.3); }
-            50% { transform: translateY(-10px); box-shadow: 0 0 35px rgba(254, 254, 0, 0.5); }
+        @keyframes hoverAnim {
+            0%, 100% { transform: translateY(0); box-shadow: 0 0 20px rgba(254, 254, 0, 0.4); }
+            50% { transform: translateY(-10px); box-shadow: 0 0 35px rgba(254, 254, 0, 0.7); }
         }
 
-        h1 { font-size: 1.2rem; color: #888; font-weight: 300; letter-spacing: 5px; margin-bottom: 40px; }
-
-        /* Navigation Buttons */
-        .nav-box { display: flex; gap: 20px; justify-content: center; }
-
-        .btn-portal {
-            text-decoration: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: bold;
+        h1 {
+            font-size: 0.9rem;
+            color: #666;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            cursor: pointer;
+            margin-bottom: 50px;
         }
 
-        .btn-login {
+        /* 2. THE NAVIGATION PILLS (BUTTONS) */
+        .pill-container {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-pill {
+            text-decoration: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        /* YELLOW ACTION PILL */
+        .pill-yellow {
             background: var(--neon-yellow);
             color: black;
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.4);
+            box-shadow: 0 0 15px rgba(254, 254, 0, 0.5);
+            border: 2px solid var(--neon-yellow);
         }
 
-        .btn-login:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(254, 254, 0, 0.6);
+        .pill-yellow:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(254, 254, 0, 0.8);
         }
 
-        .btn-info {
-            border: 1px solid #333;
+        /* OUTLINE PILL */
+        .pill-outline {
+            border: 2px solid #333;
             color: #888;
         }
 
-        .btn-info:hover {
-            border-color: var(--neon-blue);
-            color: var(--neon-blue);
+        .pill-outline:hover {
+            border-color: #fefe00;
+            color: #fefe00;
+            box-shadow: 0 0 15px rgba(254, 254, 0, 0.3);
         }
 
-        /* Footer Credits */
         footer {
             position: absolute;
-            bottom: 30px;
-            font-size: 0.7rem;
-            color: #444;
-            letter-spacing: 2px;
+            bottom: 40px;
+            font-size: 0.65rem;
+            color: #333;
+            letter-spacing: 3px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="main-logo">DB EA TERMINAL</div>
-        <h1>AUTOMATED FOREX INFRASTRUCTURE</h1>
-        
-        <div class="nav-box">
-            <a href="login.html" class="btn-portal btn-login">Access Portal</a>
-            <a href="#" class="btn-portal btn-info">Documentation</a>
-        </div>
+    <div class="brand-pill">DB EA TERMINAL</div>
+    <h1>Institutional Trading Infrastructure</h1>
+
+    <div class="pill-container">
+        <a href="login.html" class="nav-pill pill-yellow">Access Portal</a>
+        <a href="#" class="nav-pill pill-outline">System Docs</a>
     </div>
 
-    <footer>EST. 2024 | INSTITUTIONAL GRADE TECHNOLOGY</footer>
+    <footer>CORE ENGINE V2.0 | SECURE CONNECT</footer>
 
 </body>
 </html>
