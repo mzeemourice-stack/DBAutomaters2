@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA Terminal | High-Frequency Systems</title>
+    <title>DBAUTOMATERS | Institutional Deriv Systems</title>
     <style>
         :root { 
             --neon-yellow: #fefe00; --neon-lime: #39ff14; --neon-blue: #00d2ff; --dark-bg: #050505;
@@ -12,79 +12,125 @@
         body {
             margin: 0; padding: 0; background: var(--dark-bg); color: white;
             font-family: 'Inter', sans-serif; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
+            align-items: center; justify-content: center; min-height: 100vh; overflow: hidden;
+            position: relative;
         }
 
-        .wrapper { width: 90%; max-width: 1200px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        /* --- STARFIELD BACKGROUND --- */
+        .stars-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%);
+            overflow: hidden;
+        }
 
-        /* BRAND PILL */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            opacity: 0.5; animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px white; }
+        }
+
+        /* --- BRANDING & PILLS --- */
+        .wrapper { width: 90%; max-width: 1200px; text-align: center; z-index: 10; }
+
         .brand-pill {
-            padding: 1rem 3rem; border: 2px solid var(--neon-yellow); border-radius: 50px;
-            color: var(--neon-yellow); font-weight: 900; font-size: clamp(1.5rem, 5vw, 2.5rem);
-            letter-spacing: 5px; text-transform: uppercase; background: rgba(254, 254, 0, 0.03);
-            box-shadow: 0 0 25px rgba(254, 254, 0, 0.4); margin-bottom: 1rem;
-            animation: float 4s infinite ease-in-out;
+            display: inline-block; padding: 1rem 3.5rem; border: 2px solid var(--neon-yellow); 
+            border-radius: 50px; color: var(--neon-yellow); font-weight: 900; 
+            font-size: clamp(1.8rem, 6vw, 3rem); letter-spacing: 8px; text-transform: uppercase; 
+            background: rgba(254, 254, 0, 0.05); box-shadow: 0 0 30px rgba(254, 254, 0, 0.4); 
+            margin-bottom: 1.5rem; animation: float 4s infinite ease-in-out;
+            backdrop-filter: blur(5px);
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); box-shadow: 0 0 45px rgba(254, 254, 0, 0.6); }
+            50% { transform: translateY(-15px); box-shadow: 0 0 50px rgba(254, 254, 0, 0.6); }
         }
 
-        .subtitle { font-size: 0.7rem; color: var(--neon-blue); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 3rem; font-weight: bold; }
+        .subtitle { 
+            font-size: 0.75rem; color: var(--neon-blue); letter-spacing: 6px; 
+            text-transform: uppercase; margin-bottom: 4rem; font-weight: bold; 
+        }
 
-        /* STATS GRID */
-        .stats-row { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem; width: 100%; max-width: 800px; }
+        /* --- STATS --- */
+        .stats-row { 
+            display: grid; grid-template-columns: 1fr; gap: 2.5rem; 
+            margin-bottom: 4.5rem; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
+        }
         @media (min-width: 768px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
 
         .stat-box { text-align: center; }
-        .stat-value { font-size: 2rem; font-weight: 900; color: white; display: block; }
-        .stat-label { font-size: 0.6rem; color: var(--neon-lime); letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
+        .stat-value { font-size: 2.2rem; font-weight: 900; color: white; display: block; }
+        .stat-label { font-size: 0.65rem; color: var(--neon-lime); letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
 
-        /* BUTTONS */
-        .btn-container { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 300px; }
-        @media (min-width: 600px) { .btn-container { flex-direction: row; max-width: none; justify-content: center; } }
-        
-        .pill-btn {
-            text-decoration: none; padding: 1rem 3.5rem; border-radius: 50px;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
-            font-size: 0.9rem; transition: 0.3s; text-align: center;
+        /* --- BUTTON --- */
+        .btn-main {
+            text-decoration: none; display: inline-block; padding: 1.2rem 4.5rem; 
+            border-radius: 50px; font-weight: 900; text-transform: uppercase; 
+            letter-spacing: 3px; font-size: 1rem; transition: 0.4s;
+            background: var(--neon-yellow); color: black; 
+            box-shadow: 0 0 25px rgba(254, 254, 0, 0.4); border: 2px solid var(--neon-yellow);
+        }
+        .btn-main:hover { 
+            transform: scale(1.1); background: var(--neon-lime); border-color: var(--neon-lime); 
+            box-shadow: 0 0 40px var(--neon-lime);
         }
 
-        .btn-main { background: var(--neon-yellow); color: black; box-shadow: 0 0 20px rgba(254, 254, 0, 0.3); border: 2px solid var(--neon-yellow); }
-        .btn-main:hover { transform: scale(1.05); background: var(--neon-lime); border-color: var(--neon-lime); }
-
-        .btn-sec { border: 2px solid #333; color: #888; }
-        .btn-sec:hover { color: var(--neon-blue); border-color: var(--neon-blue); }
-
-        footer { margin-top: 4rem; font-size: 0.6rem; color: #333; letter-spacing: 3px; }
+        footer { margin-top: 5rem; font-size: 0.6rem; color: #444; letter-spacing: 4px; z-index: 10; }
     </style>
 </head>
 <body>
+
+    <div class="stars-container" id="star-field"></div>
+
     <div class="wrapper">
-        <div class="brand-pill">DB EA TERMINAL</div>
-        <div class="subtitle">Institutional Deriv Infrastructure</div>
+        <div class="brand-pill">DBAUTOMATERS</div>
+        <div class="subtitle">Next-Gen Deriv Algorithmic Execution</div>
 
         <div class="stats-row">
             <div class="stat-box">
                 <span class="stat-value">250K++</span>
-                <span class="stat-label">Volume Traded</span>
+                <span class="stat-label">Institutional Volume</span>
             </div>
             <div class="stat-box">
                 <span class="stat-value">50.0K++</span>
-                <span class="stat-label">Active Nodes</span>
+                <span class="stat-label">Active Trading Nodes</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value">99.99%</span>
-                <span class="stat-label">Server Uptime</span>
+                <span class="stat-value">99.9%</span>
+                <span class="stat-label">Execution Uptime</span>
             </div>
         </div>
 
-        <div class="btn-container">
-            <a href="login.html" class="pill-btn btn-main">Access Portal</a>
-            <a href="#" class="pill-btn btn-sec">Documentation</a>
-        </div>
+        <a href="login.html" class="pill-btn btn-main">Access Portal</a>
     </div>
-    <footer>V2.6.0 | ENCRYPTED CONNECT</footer>
+
+    <footer>V2.8.0 | SECURE TERMINAL LINK</footer>
+
+    <script>
+        // Generate Glittering Stars
+        const starField = document.getElementById('star-field');
+        const starCount = 150;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            
+            // Randomize twinkle speed
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            
+            starField.appendChild(star);
+        }
+    </script>
 </body>
 </html>
