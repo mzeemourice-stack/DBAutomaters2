@@ -3,127 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBAutomaters | Institutional Precision</title>
+    <title>DBAutomaters | Future of Trading</title>
     <style>
         :root {
             --neon-blue: #00d2ff;
+            --neon-sky: #87CEEB;
             --neon-green: #39ff14;
-            --dark-bg: #0a0a0a;
+            --neon-yellow: #fff200;
+            --dark-overlay: rgba(10, 10, 10, 0.85);
         }
 
-        body {
-            background-color: var(--dark-bg);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body, html {
             margin: 0;
-            height: 100vh;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: white;
             overflow: hidden;
+        }
+
+        /* Background Image from Upload */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('174830.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-overlay);
+        }
+
+        /* Top Left Headers */
+        .top-left-section {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+        }
+
+        .header-box {
+            padding: 10px 20px;
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            box-shadow: 0 0 15px var(--neon-green), inset 0 0 5px var(--neon-blue);
+            display: inline-block;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .sub-header-box {
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-sky);
+            box-shadow: 0 0 20px rgba(135, 206, 235, 0.6);
+            animation: bounceLoop 3s infinite ease-in-out;
+            background: rgba(0, 0, 0, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* Center Content */
+        .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-
-        /* Top Left Header Box */
-        .top-left-box {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            border: 2px solid var(--neon-green);
-            border-radius: 12px;
-            box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-blue);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .text-green { color: var(--neon-green); }
-        .text-blue { color: var(--neon-blue); }
-
-        /* Secondary Header Box with Bouncing Loop */
-        .sub-header-box {
-            position: absolute;
-            top: 85px;
-            left: 20px;
-            padding: 8px 15px;
-            border-radius: 10px;
-            border: 1px solid white;
-            box-shadow: 0 0 15px white;
-            animation: bounceLoop 3s infinite ease-in-out;
-            font-size: 0.9rem;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .split-text {
-            background: linear-gradient(to right, var(--neon-green) 50%, var(--neon-blue) 50%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        /* Center Content */
-        .main-container {
+            height: 100vh;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        /* Trusted Pill Shape */
-        .trusted-pill {
-            background: rgba(57, 255, 20, 0.2);
-            padding: 6px 20px;
-            border-radius: 50px; /* This creates the Pill shape */
+        .trusted-pill-main {
+            background: rgba(57, 255, 20, 0.15);
+            padding: 8px 25px;
+            border-radius: 50px;
             border: 1px solid var(--neon-green);
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            transition: 0.3s;
             cursor: pointer;
         }
 
-        .trusted-pill:hover {
-            background: rgba(57, 255, 20, 0.4);
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--neon-green);
+        .trusted-pill-main:hover {
+            background: rgba(57, 255, 20, 0.3);
+            box-shadow: 0 0 20px var(--neon-green);
         }
 
-        /* Main Bouncing Logo */
         .main-logo {
-            font-size: 4rem;
+            font-size: 5rem;
             font-weight: 900;
             animation: slowBounce 4s infinite ease-in-out;
-            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            margin: 0;
         }
 
-        /* Animations */
+        .tagline {
+            font-size: 0.75rem; /* Very small but readable */
+            letter-spacing: 1px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Multi-Stat Floating Pill Container */
+        .stats-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            padding: 15px 40px;
+            border-radius: 50px; /* Pill Shape */
+            border: 2px solid rgba(57, 255, 20, 0.3);
+            background: rgba(57, 255, 20, 0.05);
+            backdrop-filter: blur(5px);
+            animation: float 5s infinite ease-in-out;
+            transition: transform 0.3s;
+        }
+
+        .stats-container:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-green);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-val {
+            color: var(--neon-yellow);
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .uptime-glow {
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-blue);
+        }
+
+        /* Colors & Animations */
+        .green { color: var(--neon-green); }
+        .blue { color: var(--neon-blue); }
+        .split-text {
+            background: linear-gradient(to right, var(--neon-green) 50%, var(--neon-sky) 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         @keyframes bounceLoop {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
+            50% { transform: translateY(8px); }
         }
 
         @keyframes slowBounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-left-box">
-        <span class="text-green">DB</span><span class="text-blue">Automater</span>
+    <div class="bg-container">
+        <div class="overlay"></div>
     </div>
 
-    <div class="sub-header-box">
-        <span class="split-text">Institutional Precision II Smart Automate Trades</span>
+    <div class="top-left-section">
+        <div class="header-box">
+            <span class="green">DB</span><span class="blue">Automater</span>
+        </div>
+        <div class="sub-header-box">
+            <span class="split-text">Institutional Precision II Smart Automate Trades</span>
+        </div>
     </div>
 
-    <div class="main-container">
-        <div class="trusted-pill">
-            Trusted by +50,000 traders globally
+    <div class="main-content">
+        <div class="trusted-pill-main">
+            trusted by +50,000 traders globally
         </div>
         
-        <div class="main-logo">
-            <span class="text-green">DB</span><span class="text-blue">Automaters</span>
+        <h1 class="main-logo">
+            <span class="green">DB</span><span class="blue">Automaters</span>
+        </h1>
+
+        <div class="tagline">
+            The future is automate trading with Our performance Expert Advisors
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-val">+50.0K</span>
+                <span class="stat-label">live traders</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-val">+2.8B ++</span>
+                <span class="stat-label">trading volume</span>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-val uptime-glow">99.99%</span>
+                <span class="stat-label">uptime</span>
+            </div>
         </div>
     </div>
 
