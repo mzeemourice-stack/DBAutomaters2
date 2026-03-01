@@ -3,249 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA | Deriv Institutional Terminal</title>
+    <title>DB EA | Terminal</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
     <style>
-        :root { 
-            --neon-yellow: #fefe00; --neon-lime: #39ff14; --neon-blue: #00d2ff; --dark-bg: #050505;
-        }
+        :root { --neon-yellow: #fefe00; --neon-lime: #39ff14; --neon-blue: #00d2ff; --dark-bg: #050505; }
+        body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* --- FUTURISTIC LOADER --- */
-        #loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: opacity 1s ease;
-        }
-        .ring {
-            width: 100px; height: 100px; border: 3px solid transparent;
-            border-top: 3px solid var(--neon-yellow); border-radius: 50%;
-            animation: spin 1s linear infinite; position: relative;
-        }
+        /* BRANDED LOADER */
+        #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-content { position: relative; display: flex; align-items: center; justify-content: center; }
+        .ring { width: 150px; height: 150px; border: 3px solid transparent; border-top: 3px solid var(--neon-yellow); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-brand { position: absolute; color: var(--neon-yellow); font-weight: 900; letter-spacing: 2px; font-size: 1.2rem; text-shadow: 0 0 10px var(--neon-yellow); }
+        .loading-text { margin-top: 30px; color: var(--neon-blue); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
+        .loading-text::after { content: "ACCESSING VOLATILITY MARKET..."; animation: textSwap 6s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes textSwap { 0%, 33% { content: "ACCESSING VOLATILITY MARKET..."; } 34%, 66% { content: "SYNCING ALGORITHMIC NODES..."; } 67%, 100% { content: "ESTABLISHING SECURE LINK..."; } }
 
-        /* --- LAYOUT --- */
-        body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        .header { 
-            height: 100px; background: #000; border-bottom: 1px solid #222; 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px; 
-        }
-        
-        .brand-pill {
-            padding: 10px 30px; border: 2px solid var(--neon-yellow); border-radius: 50px;
-            color: var(--neon-yellow); font-weight: 900; letter-spacing: 2px;
-            background: rgba(254, 254, 0, 0.05); box-shadow: 0 0 20px rgba(254, 254, 0, 0.3);
-        }
-
+        /* UI LAYOUT */
+        .header { height: 90px; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #000; }
         .workspace { display: flex; flex: 1; padding: 20px; gap: 20px; }
-
-        /* --- SIDEBAR --- */
+        .terminal-main { flex: 1; background: #000; border: 1px solid #222; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; }
         .sidebar { width: 350px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 20px; position: relative; overflow: hidden; }
-        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-lime); }
-        .card h4 { margin: 0 0 15px 0; font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* --- TRADING CONSOLE (Main Area) --- */
-        .terminal-main { 
-            flex: 1; background: #000; border: 1px solid #222; border-radius: 20px; 
-            display: flex; flex-direction: column; padding: 20px; box-shadow: inset 0 0 30px rgba(0, 210, 255, 0.05);
-        }
-
-        /* --- TRADING PARAMETERS --- */
-        .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .card { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 20px; border-left: 4px solid var(--neon-lime); }
         
-        .param-group { display: flex; flex-direction: column; gap: 5px; }
-        .param-group label { font-size: 0.65rem; color: #777; text-transform: uppercase; }
-
-        /* Toggles */
+        /* PARAMETERS */
+        .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-blue { background: var(--neon-blue); color: black; box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
+        .btn-lime { background: var(--neon-lime); color: black; }
+        
+        /* TOGGLE STYLES */
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--neon-lime); }
         input:checked + .slider:before { transform: translateX(20px); }
-
-        /* --- INPUTS & PILLS --- */
-        input, select { 
-            width: 100%; padding: 12px; margin-bottom: 5px; background: #000; 
-            border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.8rem;
-        }
-        input:focus { border-color: var(--neon-blue); outline: none; }
-
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn-lime { background: var(--neon-lime); color: black; box-shadow: 0 0 15px rgba(57, 255, 20, 0.3); }
-        .btn-blue { background: var(--neon-blue); color: black; box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
-        .btn-outline { background: transparent; border: 1px solid #444; color: white; }
-        .btn:hover { transform: scale(1.02); filter: brightness(1.2); }
-
-        .status-tag { font-size: 0.6rem; padding: 4px 12px; border-radius: 50px; font-weight: bold; border: 1px solid #333; }
-        .active { color: var(--neon-lime); border-color: var(--neon-lime); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
     </style>
 </head>
 <body>
-
-    <div id="loader-overlay">
-        <div class="ring"></div>
-        <div style="margin-top: 20px; color: var(--neon-yellow); letter-spacing: 4px; font-size: 0.7rem;">CONNECTING TO DERIV NODES...</div>
-    </div>
+    <div id="loader-overlay"><div class="loader-content"><div class="ring"></div><div class="loader-brand">DB EA</div></div><div class="loading-text"></div></div>
 
     <div class="header">
-        <div class="brand-pill">DB EA TERMINAL</div>
-        
-        <div style="display: flex; gap: 30px; align-items: center;">
-            <div style="text-align: right;">
-                <div style="font-size: 0.6rem; color: #555;">SESSION PROFIT</div>
-                <div id="session-profit" style="color: var(--neon-lime); font-weight: 900; font-size: 1.2rem;">+$0.00</div>
-            </div>
-            <div style="width: 120px;">
-                <div style="font-size: 0.6rem; color: #555; text-align:center;">V75 PULSE</div>
-                <div style="height: 8px; background: #222; border-radius: 10px; margin-top: 5px; overflow: hidden; display: flex;">
-                    <div id="sentiment-bull" style="width: 65%; background: var(--neon-lime); transition: 1s;"></div>
-                    <div id="sentiment-bear" style="width: 35%; background: #ff4444; transition: 1s;"></div>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <div style="text-align: right;">
-                    <div style="font-size: 0.6rem; color: #555;">WALLET</div>
-                    <div id="user-balance" style="color: var(--neon-blue); font-weight: 900; font-size: 1.2rem;">$0.00</div>
-                </div>
-                <button onclick="logout()" class="btn-outline" style="padding: 8px 15px; border-radius: 50px; font-size: 0.7rem;">EXIT</button>
-            </div>
+        <div style="padding: 10px 25px; border: 2px solid var(--neon-yellow); border-radius: 50px; color: var(--neon-yellow); font-weight: 900; font-size: 0.8rem; letter-spacing: 2px;">DB EA TERMINAL</div>
+        <div style="display: flex; gap: 25px; align-items: center;">
+            <div style="text-align: right;"><div style="font-size: 0.6rem; color: #555;">SESSION PROFIT</div><div id="session-profit" style="color: var(--neon-lime); font-weight: 900; font-size: 1.2rem;">+$0.00</div></div>
+            <div style="text-align: right;"><div style="font-size: 0.6rem; color: #555;">WALLET</div><div id="user-balance" style="color: var(--neon-blue); font-weight: 900; font-size: 1.2rem;">$0.00</div></div>
         </div>
     </div>
 
     <div class="workspace">
         <div class="terminal-main">
-            <div class="card" style="flex:1; border: none; background: transparent; padding: 0;">
-                <h4 style="border-bottom: 1px solid #222; padding-bottom: 10px;">Deriv Speedbot Console</h4>
-                
-                <input type="text" id="deriv-market" placeholder="SELECT MARKET (e.g., Volatility 75)">
-                
-                <div class="params-grid">
-                    <div class="param-group">
-                        <label>Ticks</label>
-                        <input type="number" id="deriv-ticks" value="1">
-                    </div>
-                    <div class="param-group">
-                        <label>Stake (USD)</label>
-                        <input type="number" id="deriv-stake" value="0.5">
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 20px; margin-top: 15px; font-size: 0.7rem; color: #888;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                        Alternate Even/Odd
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-                        Enable Martingale
-                    </div>
-                </div>
-
-                <div class="param-group" style="margin-top: 15px;">
-                    <label>Martingale Multiplier</label>
-                    <input type="number" id="deriv-martingale" value="1.15">
-                </div>
-
-                <button class="btn btn-blue" style="margin-top: 20px;">START AI SPEEDBOT</button>
-                
-                <div id="trade-log" style="margin-top: 15px; font-size: 0.7rem; color: #555; text-align: center;">Ticks Processed: 0 | Last Digit: -</div>
+            <h4 style="text-transform: uppercase; font-size: 0.7rem; color: #555; border-bottom: 1px solid #222; padding-bottom: 10px;">Speedbot Configuration</h4>
+            <div style="margin-top: 15px;"><label style="font-size: 0.6rem; color: #888;">SELECT MARKET</label><select><option>Volatility 75 Index</option><option>Volatility 100 (1s) Index</option></select></div>
+            <div class="params-grid">
+                <div><label style="font-size: 0.6rem;">Ticks</label><input type="number" value="1"></div>
+                <div><label style="font-size: 0.6rem;">Stake (USD)</label><input type="number" value="0.50"></div>
             </div>
+            <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 0.7rem;"><label class="switch"><input type="checkbox"><span class="slider"></span></label> Alternate Even/Odd</div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 0.7rem;"><label class="switch"><input type="checkbox" checked><span class="slider"></span></label> Enable Martingale</div>
+            </div>
+            <button class="btn btn-blue">START AI SPEEDBOT</button>
+            <div id="log" style="margin-top: 20px; flex: 1; background: #050505; padding: 15px; border-radius: 10px; font-family: monospace; color: var(--neon-lime); font-size: 0.8rem; overflow-y: auto;">[SYSTEM] Initializing nodes...</div>
         </div>
 
         <div class="sidebar">
-            <div class="card">
-                <h4>Subscription</h4>
-                <div style="font-size: 0.9rem; margin-bottom: 10px;">Deriv EA Weekly</div>
-                <button class="btn btn-outline" id="activate-btn" onclick="activateEA()">Activate for $2.50</button>
-                <div id="ea-status" class="status-tag" style="margin-top: 15px;">DISCONNECTED</div>
-            </div>
-
-            <div class="card" style="border-left-color: var(--neon-blue);">
-                <h4>Deriv Account Link</h4>
-                <input type="text" id="deriv-id" placeholder="Deriv CR Number / MT5 ID">
-                <input type="password" id="deriv-pass" placeholder="Trading Password">
-                <button class="btn btn-blue" onclick="saveDeriv()">Sync Deriv Account</button>
-            </div>
-
-            <div class="card">
-                <h4>Wallet</h4>
-                <button class="btn btn-lime" onclick="alert('Redirecting to M-Pesa...')">Deposit via M-Pesa</button>
-            </div>
+            <div class="card"><h4>Subscription</h4><button class="btn btn-lime" onclick="activateEA()">Activate for $2.50</button></div>
+            <div class="card" style="border-left-color: var(--neon-blue);"><h4>Account Sync</h4><input type="text" placeholder="CR Number / MT5 ID"><input type="password" placeholder="Password"><button class="btn btn-blue">Link Account</button></div>
         </div>
     </div>
 
     <script>
-        // FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
-            authDomain: "dbautomaters.firebaseapp.com",
-            projectId: "dbautomaters",
-            storageBucket: "dbautomaters.firebasestorage.app",
-            messagingSenderId: "979994954651",
-            appId: "1:979994954651:web:476730aa83893ed7716f3e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // LOADER
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader-overlay').style.display = 'none', 1000);
-            }, 2000);
-        });
-
-        // SYNC DATA & ACTIVATE UI
-        auth.onAuthStateChanged(user => {
-            if (!user) { window.location.href = "login.html"; }
-            else {
-                db.collection("users").doc(user.uid).onSnapshot(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('user-balance').innerText = `$${data.balance.toFixed(2)}`;
-                        if(data.ea_active) {
-                            const tag = document.getElementById('ea-status');
-                            tag.innerText = "EA ACTIVE";
-                            tag.classList.add('active');
-                            // Now you would start your actual Deriv WebSocket connection here
-                        }
-                    } else {
-                        db.collection("users").doc(user.uid).set({ balance: 0.0, ea_active: false });
-                    }
-                });
-            }
-        });
-
-        async function saveDeriv() {
-            const user = auth.currentUser;
-            const details = { 
-                id: document.getElementById('deriv-id').value, 
-                pass: document.getElementById('deriv-pass').value 
-            };
-            await db.collection("users").doc(user.uid).update({ deriv_creds: details });
-            alert("Deriv account synced.");
+        // Loader timeout
+        window.addEventListener('load', () => setTimeout(() => document.getElementById('loader-overlay').style.display='none', 3000));
+        
+        // Trading Logic Bridge
+        function activateEA() {
+            // This is where you connect the START button to the Deriv WebSocket API
+            document.getElementById('log').innerHTML += "<div>[NETWORK] Attempting Deriv connection...</div>";
         }
-
-        async function activateEA() {
-            const user = auth.currentUser;
-            const doc = await db.collection("users").doc(user.uid).get();
-            if(doc.data().balance >= 2.50) {
-                await db.collection("users").doc(user.uid).update({ 
-                    balance: doc.data().balance - 2.50, 
-                    ea_active: true 
-                });
-                alert("EA Activated!");
-            } else { alert("Insufficient funds."); }
-        }
-
-        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
     </script>
 </body>
 </html>
