@@ -2,132 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DBAutomaters Terminal | EA Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB EA Terminal | Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root { 
-            --neon-green: #39ff14; 
-            --neon-blue: #00d2ff; 
-            --neon-yellow: #fefe00;
-            --dark-bg: #050505;
+            --neon-green: #39ff14; --neon-blue: #00d2ff; --neon-yellow: #fefe00; --dark-bg: #050505;
         }
+        body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        body { 
-            margin: 0; background: var(--dark-bg); color: white; 
-            font-family: 'Inter', sans-serif; display: flex; 
-            flex-direction: column; height: 100vh; overflow: hidden; 
-        }
-
-        /* Top Header */
-        .header { 
-            height: 70px; background: #000; border-bottom: 1px solid #222; 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 25px; 
-        }
-
-        /* THE YELLOW GLOWING PILL */
+        /* HEADER AREA */
+        .header { height: 70px; background: #000; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
+        
         .brand-pill {
-            padding: 8px 20px;
-            border: 2px solid var(--neon-yellow);
-            border-radius: 50px;
-            color: var(--neon-yellow);
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            background: rgba(254, 254, 0, 0.05);
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.4);
-            animation: hoverAnim 3s infinite ease-in-out;
+            padding: 8px 20px; border: 2px solid var(--neon-yellow); border-radius: 50px;
+            color: var(--neon-yellow); font-weight: 900; letter-spacing: 1.5px;
+            text-transform: uppercase; background: rgba(254, 254, 0, 0.05);
+            box-shadow: 0 0 15px rgba(254, 254, 0, 0.4); animation: hoverAnim 3s infinite ease-in-out;
         }
+        @keyframes hoverAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        @keyframes hoverAnim {
-            0%, 100% { transform: translateY(0); box-shadow: 0 0 15px rgba(254, 254, 0, 0.4); }
-            50% { transform: translateY(-5px); box-shadow: 0 0 25px rgba(254, 254, 0, 0.7); }
-        }
+        .balance-pill { color: var(--neon-blue); font-weight: bold; font-size: 1.1rem; border: 1px solid var(--neon-blue); padding: 5px 15px; border-radius: 50px; }
 
-        .user-stats { display: flex; align-items: center; gap: 20px; }
-        .balance-box { color: var(--neon-blue); font-weight: bold; font-size: 1.1rem; }
+        /* MAIN CONTENT AREA */
+        .main-container { display: flex; flex: 1; }
 
-        /* Main Workspace */
-        .workspace { display: flex; flex: 1; }
-
-        /* Sidebar */
-        .sidebar { 
-            width: 320px; background: #0a0a0a; border-right: 1px solid #222; 
-            padding: 20px; display: flex; flex-direction: column; gap: 15px; 
-        }
-
-        .card { 
-            background: #111; border: 1px solid #222; padding: 18px; border-radius: 15px; 
-            transition: 0.3s;
-        }
-        .card:hover { border-color: #444; }
-        .card h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: #888; text-transform: uppercase; }
-
-        .btn { 
-            width: 100%; padding: 12px; border-radius: 10px; border: none; 
-            font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; 
-        }
+        /* SIDEBAR */
+        .sidebar { width: 330px; background: #0a0a0a; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; }
+        .card h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input { width: 100%; padding: 10px; margin-bottom: 8px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; font-size: 0.8rem; }
+        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 5px; }
         .btn-green { background: var(--neon-green); color: black; }
         .btn-blue { background: var(--neon-blue); color: black; }
-        .btn-outline { background: transparent; border: 1px solid #333; color: white; }
-        .btn:hover { transform: scale(1.02); opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: white; }
+        
+        /* CHART AREA */
+        .chart-area { flex: 1; padding: 15px; background: #000; display: flex; flex-direction: column; }
+        #tv_widget_container { flex: 1; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
 
-        /* Chart Area */
-        .chart-container { flex: 1; padding: 15px; background: #000; }
-        #tv_widget { 
-            width: 100%; height: 550px; /* Non-fullscreen height */
-            border-radius: 12px; border: 1px solid #222; overflow: hidden; 
-        }
-
-        .status-tag { 
-            font-size: 0.65rem; padding: 4px 10px; border-radius: 4px; 
-            margin-top: 10px; display: inline-block; font-weight: bold;
-        }
-        .off { background: rgba(255,0,0,0.1); color: #ff4444; border: 1px solid #ff4444; }
-        .on { background: rgba(57,255,20,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .status-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-top: 10px; font-weight: bold; }
+        .inactive { background: rgba(255,0,0,0.1); color: #ff4444; border: 1px solid #ff4444; }
+        .active { background: rgba(57,255,20,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="brand-pill">DB EA TERMINAL</div>
-        <div class="user-stats">
-            <div class="balance-box" id="walletBal">Balance: $0.00</div>
-            <button onclick="logout()" class="btn-outline" style="padding: 6px 15px; font-size: 0.7rem;">Sign Out</button>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="balance-pill" id="liveBalance">$0.00</div>
+            <button onclick="logout()" class="btn-outline" style="padding: 5px 12px; font-size: 0.7rem;">Exit</button>
         </div>
     </div>
 
-    <div class="workspace">
+    <div class="main-container">
         <div class="sidebar">
             <div class="card">
-                <h4>Funds Management</h4>
-                <button class="btn btn-green" onclick="deposit()">Deposit Funds</button>
-                <button class="btn btn-outline" onclick="withdraw()">Withdrawal</button>
+                <h4>Wallet & Funding</h4>
+                <button class="btn btn-green" onclick="alert('Redirecting to M-Pesa Payment Gateway...')">Deposit Funds</button>
+                <button class="btn btn-outline" onclick="alert('Requesting Withdrawal...')">Withdraw</button>
             </div>
 
             <div class="card">
-                <h4>Institutional EA</h4>
-                <p style="font-size: 0.7rem; color: #666;">Fee: <b>$2.50 / 7 Days</b></p>
-                <button class="btn btn-blue" onclick="payForEA()">Activate Paid EA</button>
-                <div id="eaStatus" class="status-tag off">EA INACTIVE</div>
+                <h4>Link MT5 Account</h4>
+                <input type="text" id="mt5_id" placeholder="MT5 Login ID">
+                <input type="password" id="mt5_pass" placeholder="Trading Password">
+                <input type="text" id="mt5_server" placeholder="Server (e.g. Exness-Real)">
+                <button class="btn btn-outline" onclick="saveMT5()">Save Account Access</button>
+            </div>
+
+            <div class="card">
+                <h4>EA Subscription</h4>
+                <p style="font-size: 0.7rem; color: #666;">Fee: <b>$2.50 / Week</b></p>
+                <button class="btn btn-blue" id="activateBtn" onclick="payAndActivate()">Activate Paid EA</button>
+                <div id="eaStatus" class="status-badge inactive">EA: DISCONNECTED</div>
             </div>
 
             <div class="card">
                 <h4>Practice Mode</h4>
-                <button class="btn btn-outline" onclick="startDemo()">Run Demo EA</button>
+                <button class="btn btn-outline" onclick="alert('Demo trading activated with $10,000')">Run Demo Trade</button>
             </div>
         </div>
 
-        <div class="chart-container">
-            <div id="tv_widget"></div>
+        <div class="chart-area">
+            <div id="tv_widget_container"></div>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // Your Firebase Config
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
             authDomain: "dbautomaters.firebaseapp.com",
@@ -140,57 +109,89 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Load Chart
+        // 1. Initialise Chart
         function initChart() {
             new TradingView.widget({
                 "width": "100%",
-                "height": 550,
+                "height": "100%",
                 "symbol": "FX:EURUSD",
-                "interval": "60",
+                "interval": "30",
                 "theme": "dark",
                 "style": "1",
-                "container_id": "tv_widget",
+                "container_id": "tv_widget_container",
                 "allow_symbol_change": true,
-                "details": true
+                "details": true,
+                "hotlist": true
             });
         }
 
-        // Auth Listener & Data Sync
+        // 2. Auth & Real-Time Balance Sync
         auth.onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = "login.html";
             } else {
                 initChart();
+                // Listen for balance and status changes in Firestore
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if (doc.exists) {
                         const data = doc.data();
-                        document.getElementById('walletBal').innerText = `Balance: $${data.balance.toFixed(2)}`;
+                        document.getElementById('liveBalance').innerText = `$${data.balance.toFixed(2)}`;
+                        
+                        const status = document.getElementById('eaStatus');
+                        const actBtn = document.getElementById('activateBtn');
+                        
                         if(data.ea_active) {
-                            const tag = document.getElementById('eaStatus');
-                            tag.innerText = "EA ACTIVE";
-                            tag.className = "status-tag on";
+                            status.innerText = "EA: ACTIVE & TRADING";
+                            status.className = "status-badge active";
+                            actBtn.innerText = "EA RUNNING";
+                            actBtn.disabled = true;
+                            actBtn.style.opacity = "0.5";
                         }
                     } else {
+                        // Setup new user document
                         db.collection("users").doc(user.uid).set({ balance: 0.00, ea_active: false });
                     }
                 });
             }
         });
 
-        async function payForEA() {
+        // 3. Save MT5 Access Details
+        async function saveMT5() {
             const user = auth.currentUser;
-            const doc = await db.collection("users").doc(user.uid).get();
-            if (doc.data().balance >= 2.50) {
-                if(confirm("Deduct $2.50 for 1 week of EA usage?")) {
-                    alert("Activation request sent to server. Ensure MT5 is linked.");
+            const login = document.getElementById('mt5_id').value;
+            const pass = document.getElementById('mt5_pass').value;
+            const serv = document.getElementById('mt5_server').value;
+
+            if(!login || !pass || !serv) return alert("Fill all MT5 fields");
+
+            await db.collection("users").doc(user.uid).update({
+                mt5_access: { id: login, pass: pass, server: serv }
+            });
+            alert("MT5 Access Saved. You can now activate the EA.");
+        }
+
+        // 4. Handle EA Activation ($2.50 Logic)
+        async function payAndActivate() {
+            const user = auth.currentUser;
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            const currentBal = userDoc.data().balance;
+
+            if (currentBal >= 2.50) {
+                if(confirm("Deduct $2.50 from your balance to start 7 days of EA trading?")) {
+                    // Update DB - In a real app, do this on the server for security
+                    await db.collection("users").doc(user.uid).update({
+                        balance: currentBal - 2.50,
+                        ea_active: true,
+                        expiry: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))
+                    });
+                    alert("EA Successfully Activated!");
                 }
             } else {
-                alert("Insufficient Funds. Min $2.50 required.");
+                alert("Insufficient Funds. Please deposit at least $2.50");
             }
         }
 
-        function deposit() { alert("Redirecting to Local Payment Gateway..."); }
-        function logout() { auth.signOut().then(()=> window.location.href="index.html"); }
+        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
     </script>
 </body>
 </html>
