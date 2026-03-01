@@ -3,158 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA | Secure Access</title>
+    <title>DB EA ACCESS | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --neon-yellow: #fefe00; --neon-blue: #00d2ff; --dark-bg: #050505;
-        }
-
-        body {
-            margin: 0; padding: 0; background: var(--dark-bg);
-            font-family: 'Inter', sans-serif; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; perspective: 1000px;
-        }
-
-        /* --- BACKGROUND PARTICLES --- */
-        .warp-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            z-index: -1;
-        }
-
-        /* --- LOGIN CARD --- */
-        .login-card {
-            background: rgba(15, 15, 15, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px; border-radius: 24px; width: 360px;
-            backdrop-filter: blur(15px); text-align: center;
-            animation: cardSlideIn 0.8s ease-out forwards;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-        }
-
-        @keyframes cardSlideIn {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .brand {
-            font-weight: 900; letter-spacing: 4px; color: var(--neon-yellow);
-            font-size: 1.6rem; margin-bottom: 30px;
-            background: linear-gradient(90deg, #fefe00, #fff, #fefe00);
-            background-size: 200% auto; -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; animation: shine 3s linear infinite;
-        }
-
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* --- SSO BUTTONS (Google & Apple) --- */
-        .sso-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
-        
-        .sso-btn {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 12px; border-radius: 12px; border: 1px solid #333;
-            background: #111; color: white; cursor: pointer; transition: 0.3s;
-            font-weight: 600; font-size: 0.9rem; text-decoration: none;
-        }
-        
-        .sso-btn:hover { background: #222; border-color: #555; transform: translateY(-2px); }
-        .sso-btn i { font-size: 1.2rem; }
-        .fa-google { color: #DB4437; } /* Google Red */
-
-        .divider { display: flex; align-items: center; color: #444; margin: 20px 0; font-size: 0.7rem; letter-spacing: 1px; }
-        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #222; margin: 0 10px; }
-
-        /* --- INPUT FIELDS --- */
-        .input-group { position: relative; margin-bottom: 20px; }
-        input {
-            width: 100%; padding: 12px; background: #111;
-            border: 1px solid #222; color: white; border-radius: 10px;
-            outline: none; font-size: 0.9rem; transition: 0.4s; box-sizing: border-box;
-        }
-        input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-
-        /* --- LOADING BAR --- */
-        #loading-zone { display: none; margin-top: 20px; }
-        .progress-bg { width: 100%; height: 4px; background: #222; border-radius: 10px; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: var(--neon-yellow); transition: 0.1s; }
-
-        .btn-login {
-            width: 100%; padding: 14px; border: none; border-radius: 12px;
-            background: var(--neon-yellow); color: black; font-weight: 900;
-            text-transform: uppercase; cursor: pointer; letter-spacing: 1px; transition: 0.3s;
-        }
-        .btn-login:hover { box-shadow: 0 0 20px var(--neon-yellow); transform: scale(1.02); }
-
+        body { margin: 0; background-color: #0d1117; color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .access-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; width: 380px; padding: 40px; text-align: center; backdrop-filter: blur(10px); }
+        .brand-title { font-weight: 900; font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 30px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: white; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .social-btn:hover { background: rgba(255, 255, 255, 0.05); }
+        .divider { color: #666; font-size: 0.7rem; letter-spacing: 1px; margin: 20px 0; font-weight: bold; }
+        .input-box { width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; font-size: 0.9rem; }
+        .btn-initialize { width: 100%; padding: 16px; background: #fefe00; color: #000; border: none; border-radius: 12px; font-weight: 900; font-size: 0.85rem; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; }
+        #status-msg { font-size: 0.7rem; margin-top: 15px; color: #fefe00; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="warp-bg" id="particles"></div>
+    <div class="access-card">
+        <div class="brand-title">DB EA ACCESS</div>
 
-    <div class="login-card">
-        <div class="brand">DB EA ACCESS</div>
-        
-        <div class="sso-container">
-            <a href="#" class="sso-btn" onclick="startLoading()">
-                <i class="fab fa-apple"></i> Sign in with Apple
-            </a>
-            <a href="#" class="sso-btn" onclick="startLoading()">
-                <i class="fab fa-google"></i> Sign in with Google
-            </a>
-        </div>
+        <button class="social-btn" id="appleBtn">
+            <i class="fa-brands fa-apple"></i> Sign In with Apple
+        </button>
+        <button class="social-btn" id="googleBtn">
+            <i class="fa-brands fa-google" style="color: #ea4335;"></i> Sign In with Google
+        </button>
 
         <div class="divider">OR USE TERMINAL KEY</div>
 
-        <div class="input-group">
-            <input type="text" placeholder="Institutional ID">
-        </div>
+        <input type="text" id="instID" class="input-box" placeholder="Institutional ID">
+        <input type="password" id="termKey" class="input-box" placeholder="Terminal Key">
 
-        <div class="input-group">
-            <input type="password" placeholder="Terminal Key">
-        </div>
-
-        <button class="btn-login" id="loginBtn" onclick="startLoading()">Initialize Session</button>
-        
-        <div id="loading-zone">
-            <p style="color: var(--neon-blue); font-size: 0.6rem; margin-bottom: 8px;">ENCRYPTING TUNNEL...</p>
-            <div class="progress-bg"><div class="progress-fill" id="fill"></div></div>
-        </div>
+        <button class="btn-initialize" id="loginBtn">Initialize Session</button>
+        <div id="status-msg">Processing secure link...</div>
     </div>
 
-    <script>
-        function startLoading() {
-            document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('loading-zone').style.display = 'block';
-            let fill = document.getElementById('fill');
-            let width = 0;
-            let interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    window.location.href = 'trading.html';
-                } else {
-                    width += Math.random() * 5;
-                    fill.style.width = width + '%';
-                }
-            }, 100);
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithEmailAndPassword } 
+        from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-        // Background Stars Animation
-        const bg = document.getElementById('particles');
-        for (let i = 0; i < 40; i++) {
-            const star = document.createElement('div');
-            star.style.position = 'absolute';
-            star.style.background = 'white';
-            star.style.width = '1px';
-            star.style.height = '1px';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.opacity = Math.random();
-            star.animate([{ transform: 'scale(0)' }, { transform: 'scale(1.5)' }], 
-                { duration: 2000 + Math.random() * 2000, iterations: Infinity, direction: 'alternate' });
-            bg.appendChild(star);
-        }
+        // Your Confirmed Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
+            authDomain: "dbautomaters.firebaseapp.com",
+            projectId: "dbautomaters",
+            storageBucket: "dbautomaters.firebasestorage.app",
+            messagingSenderId: "979994954651",
+            appId: "1:979994954651:web:476730aa83893ed7716f3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const showStatus = (msg) => {
+            const el = document.getElementById('status-msg');
+            el.innerText = msg;
+            el.style.display = 'block';
+        };
+
+        // Google Handler
+        document.getElementById('googleBtn').addEventListener('click', () => {
+            const provider = new GoogleAuthProvider();
+            showStatus("Redirecting to Google...");
+            signInWithPopup(auth, provider)
+                .then(() => window.location.href = "trading.html")
+                .catch((err) => showStatus("Error: " + err.message));
+        });
+
+        // Apple Handler
+        document.getElementById('appleBtn').addEventListener('click', () => {
+            const provider = new OAuthProvider('apple.com');
+            showStatus("Redirecting to Apple...");
+            signInWithPopup(auth, provider)
+                .then(() => window.location.href = "trading.html")
+                .catch((err) => showStatus("Error: " + err.message));
+        });
+
+        // ID/Key Handler
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('instID').value + "@dbautomaters.com";
+            const password = document.getElementById('termKey').value;
+            showStatus("Verifying Terminal Key...");
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => window.location.href = "trading.html")
+                .catch((err) => showStatus("Invalid ID or Terminal Key"));
+        });
     </script>
 </body>
 </html>
