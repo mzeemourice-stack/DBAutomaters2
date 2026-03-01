@@ -1,115 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dbautomaters Trading</title>
-  <style>
-    /* ===== Dark Theme ===== */
-    body {
-      background-color: #121212;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* ===== Header ===== */
-    header {
-      display: flex;
-      align-items: center;
-      padding: 15px 20px;
-    }
-
-    /* Dbautomaters name in pill shape */
-    .logo {
-      background: linear-gradient(to right, #ff0000, #0000ff);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 1.2rem;
-      animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    /* ===== Buttons ===== */
-    .button {
-      display: inline-block;
-      padding: 12px 25px;
-      margin: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 15px; /* Rounded edges */
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      color: #ffff00; /* Yellow text */
-      background-color: #0000ff; /* Blue background */
-      box-shadow: 0 0 10px #0000ff;
-    }
-
-    .button:hover {
-      box-shadow: 0 0 20px #ffff00;
-      background-color: #1a1aff;
-      color: #ffff00;
-      border-color: #ffff00;
-    }
-
-    /* ===== Trading Container ===== */
-    .trading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
-    }
-
-    .trade-section {
-      background-color: #1e1e1e;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 15px;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-    }
-
-    .trade-section h2 {
-      margin-bottom: 15px;
-      color: #00ffff; /* Cyan headings for contrast */
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dbautomaters Trading Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+  }
+  /* Header */
+  header {
+    height: 60px;
+    background: linear-gradient(to right, red, blue);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+  }
+  /* Layout */
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    background-color: #1e1e1e;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .sidebar h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+  }
+  /* Main panel */
+  .main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  /* Buttons */
+  .button {
+    background-color: #0000ff;
+    color: #ffff00;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .button:hover {
+    box-shadow: 0 0 10px #ffff00;
+  }
+  /* Tick display */
+  #tickBox {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #222;
+    border-radius: 10px;
+    font-size: 1.2em;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Dbautomaters</div>
-  </header>
+<header>Dbautomaters</header>
 
-  <div class="trading-container">
-    
-    <div class="trade-section">
-      <h2>Deriv Trade</h2>
-      <button class="button">Buy</button>
-      <button class="button">Sell</button>
-      <button class="button">Stop Loss</button>
-      <button class="button">Take Profit</button>
-    </div>
-
-    <div class="trade-section">
-      <h2>Account Info</h2>
-      <button class="button">Deposit</button>
-      <button class="button">Withdraw</button>
-      <button class="button">Balance</button>
-    </div>
-
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Bot Editor</h3>
+    <p>Logic Blocks</p>
+    <p>Trade Parameters</p>
+    <p>Purchase / Sell Conditions</p>
+    <h3>Analysis</h3>
+    <p>Tick Analysis</p>
+    <p>Candle Analysis</p>
+    <p>Contracts / Stats</p>
+    <h3>Utilities</h3>
+    <p>Custom Functions</p>
+    <p>Variables</p>
+    <p>Notifications</p>
+    <h3>Tools</h3>
+    <p>Virtual Hook</p>
+    <p>Binary Tools</p>
+    <p>Contract Modifiers</p>
   </div>
+
+  <!-- Main Panel -->
+  <div class="main">
+    <h2>Trade Panel</h2>
+    <p>Market: <select><option>Volatility 10 Index</option></select></p>
+    <p>Trade Type: <select><option>Up/Down</option></select></p>
+    <div>
+      <button class="button" id="buyBtn">Buy</button>
+      <button class="button" id="sellBtn">Sell</button>
+    </div>
+    <div id="tickBox">Tick Price: --</div>
+  </div>
+</div>
+
+<!-- Socket.io -->
+<script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+<script>
+  // Connect to your backend WebSocket
+  const socket = io('https://YOUR-RENDER-BACKEND');
+
+  socket.on('connect', () => console.log('Connected to backend WebSocket'));
+
+  socket.on('tick', (data) => {
+    document.getElementById('tickBox').innerText = 'Tick Price: ' + data.price.toFixed(2);
+  });
+
+  // Example button actions
+  document.getElementById('buyBtn').addEventListener('click', () => {
+    fetch('https://YOUR-RENDER-BACKEND/buy', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => console.log('Buy executed:', data));
+  });
+
+  document.getElementById('sellBtn').addEventListener('click', () => {
+    fetch('https://YOUR-RENDER-BACKEND/sell', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => console.log('Sell executed:', data));
+  });
+</script>
 
 </body>
 </html>
