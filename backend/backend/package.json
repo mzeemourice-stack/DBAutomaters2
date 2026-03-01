@@ -10,5 +10,8 @@
     "cors": "^2.8.5",
     "stripe": "^11.0.0",
     "firebase-admin": "^11.10.0"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
