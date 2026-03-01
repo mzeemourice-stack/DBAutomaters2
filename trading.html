@@ -2,152 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBAutomaters | Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DBAutomaters | Pro Terminal</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></script>
+
     <style>
-        :root { 
-            --bg-deep: #020202; 
-            --neon-blue: #00d2ff; 
-            --neon-yellow: #fefe00; 
-            --neon-lime: #39ff14;
-            --pill-dark: #0f0f0f;
-        }
-
-        body { 
-            margin: 0; background: var(--bg-deep); color: white; 
-            font-family: 'Inter', sans-serif; height: 100vh;
-        }
-
-        /* --- MOBILE-FRIENDLY NAVIGATION --- */
-        .nav-container {
-            display: flex; overflow-x: auto; gap: 10px; padding: 15px;
-            background: rgba(0,0,0,0.9); border-bottom: 1px solid #1a1a1a;
-            scrollbar-width: none; /* Hide scrollbar for clean look */
-        }
-        .nav-pill {
-            flex: 0 0 auto; padding: 10px 20px; border-radius: 50px; background: var(--pill-dark);
-            color: var(--neon-blue); font-family: 'Orbitron', sans-serif; font-size: 10px;
-            border: 1px solid #222; cursor: pointer; text-transform: uppercase;
-        }
-        .nav-pill.active { border-color: var(--neon-yellow); color: var(--neon-yellow); }
-
-        /* --- RESPONSIVE WORKSPACE --- */
-        .workspace { 
-            display: flex; flex-direction: column; gap: 20px; padding: 20px;
-            overflow-y: auto; height: calc(100vh - 80px);
-        }
-
-        /* Desktop Layout Override */
-        @media (min-width: 992px) {
-            .workspace { display: grid; grid-template-columns: 1fr 360px; padding: 30px; }
-        }
-
-        /* --- THE MAIN PILL TERMINAL --- */
-        .main-terminal {
-            background: var(--pill-dark); border-radius: 35px; padding: 25px;
-            border: 2px solid var(--neon-lime); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15);
-        }
-
-        .terminal-header {
-            color: var(--neon-blue); font-family: 'Orbitron', sans-serif;
-            font-size: 11px; letter-spacing: 2px; margin-bottom: 25px; text-align: center;
-        }
-
-        /* RESPONSIVE FORM GRID */
-        .form-row { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
-        @media (min-width: 600px) { .form-row { grid-template-columns: 1fr 1fr; } }
-
-        label { color: var(--neon-blue); font-size: 9px; margin-left: 15px; margin-bottom: 5px; display: block; }
+        :root { --bg: #020202; --blue: #00d2ff; --yellow: #fefe00; --lime: #39ff14; --pill: #0f0f0f; --red: #ff3e3e; }
         
-        select, input {
-            width: 100%; padding: 14px 22px; background: #000; border: 1px solid #222;
-            border-radius: 50px; color: var(--neon-yellow); outline: none; font-size: 14px;
-        }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        .btn-execute {
-            width: 100%; padding: 18px; border-radius: 50px; background: var(--neon-lime);
-            color: black; font-weight: 900; font-family: 'Orbitron', sans-serif;
-            border: none; cursor: pointer; box-shadow: 0 0 20px var(--neon-lime);
-            margin-top: 15px; font-size: 12px;
-        }
+        /* HEADER NAVIGATION */
+        .nav-bar { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: #000; border-bottom: 1px solid #1a1a1a; scrollbar-width: none; flex-shrink: 0; }
+        .nav-pill { flex: 0 0 auto; padding: 12px 22px; border-radius: 50px; background: var(--pill); color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: 10px; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
+        .nav-pill.active { border-color: var(--yellow); color: var(--yellow); box-shadow: 0 0 15px rgba(254, 254, 0, 0.3); }
 
-        /* --- SIDEBAR COMPONENTS --- */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .settings-pill-box {
-            background: var(--pill-dark); border-radius: 30px; padding: 20px;
-            border: 1px solid #222;
-        }
+        /* VIEW CONTAINER */
+        .workspace { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
 
-        .balance-display {
-            font-size: 24px; font-weight: 900; color: white;
-            text-shadow: 0 0 10px var(--neon-blue); margin-top: 5px;
-        }
+        /* CARDS & PILLS */
+        .card { background: var(--pill); border-radius: 35px; padding: 25px; border: 2px solid var(--lime); box-shadow: 0 0 20px rgba(57, 255, 20, 0.1); margin-bottom: 15px; }
+        .header { color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 2px; margin-bottom: 15px; }
 
-        .account-item {
-            display: flex; justify-content: space-between; padding: 12px 0;
-            border-bottom: 1px solid #1a1a1a; color: #888; font-size: 11px;
-        }
-        .account-item span { color: var(--neon-blue); }
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-pill { background: #000; padding: 15px; border-radius: 25px; border: 1px solid #222; text-align: center; }
+        .stat-label { font-size: 8px; color: var(--blue); text-transform: uppercase; display: block; }
+        .stat-val { font-size: 18px; font-weight: 900; }
+
+        /* FORMS & BUTTONS */
+        .input-pill { width: 100%; padding: 14px 20px; background: #000; border: 1px solid #222; border-radius: 50px; color: var(--yellow); font-size: 14px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+        .btn { width: 100%; padding: 18px; border-radius: 50px; border: none; font-family: 'Orbitron', sans-serif; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 11px; margin-top: 10px; }
+        .btn-lime { background: var(--lime); color: black; box-shadow: 0 0 15px var(--lime); }
+        .btn-red { background: var(--red); color: white; box-shadow: 0 0 15px var(--red); display: none; }
+        
+        /* BLOCKLY DIV */
+        #blocklyDiv { height: 350px; width: 100%; border-radius: 25px; background: #111; border: 1px solid var(--blue); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <nav class="nav-container">
-        <div class="nav-pill">Dashboard</div>
-        <div class="nav-pill">Bot Editor</div>
-        <div class="nav-pill active">Speedbot</div>
-        <div class="nav-pill">Forex Bot</div>
+    <nav class="nav-bar">
+        <div class="nav-pill active" onclick="showView('dashboard')">Dashboard</div>
+        <div class="nav-pill" onclick="showView('bot-editor')">Bot Editor</div>
+        <div class="nav-pill" onclick="showView('speedbot')">Speedbot</div>
+        <div class="nav-pill" onclick="showView('account')">Account</div>
     </nav>
 
     <div class="workspace">
-        <div class="main-terminal">
-            <div class="terminal-header">DBAUTOMATERS ENGINE</div>
-            
-            <div class="form-row">
-                <div>
-                    <label>MARKET</label>
-                    <select id="market">
-                        <option value="1HZ10V">Volatility 10 (1s)</option>
-                        <option value="R_75">Volatility 75 Index</option>
-                    </select>
-                </div>
-                <div>
-                    <label>CONTRACT</label>
-                    <select id="contract">
-                        <option value="DIGITEVEN">Even</option>
-                        <option value="DIGITODD">Odd</option>
-                    </select>
-                </div>
+        
+        <section id="dashboard" class="view-section active">
+            <div class="card" style="border-color: var(--blue);">
+                <div class="header">DBAutomaters Wallet</div>
+                <div class="stat-val" id="wallet-bal" style="font-size: 32px; color: var(--yellow);">$0.00</div>
+                <div class="stat-label">Verified Balance</div>
+                <button class="btn btn-lime" onclick="window.open('https://app.deriv.com/cashier/deposit')">Add Funds</button>
             </div>
+        </section>
 
-            <div class="form-row">
-                <div><label>TICKS</label><input type="number" id="ticks" value="1"></div>
-                <div><label>STAKE (USD)</label><input type="number" id="stake" value="0.35"></div>
+        <section id="bot-editor" class="view-section">
+            <div class="card">
+                <div class="header">Logic Workspace</div>
+                <div id="blocklyDiv"></div>
+                <button class="btn btn-lime" onclick="compileBlocks()">Generate XML Bot</button>
             </div>
+        </section>
 
-            <button class="btn-execute" onclick="launchBot()">INITIALIZE TRADE</button>
-            <div id="log" style="color:var(--neon-lime); font-family:monospace; font-size:10px; margin-top:20px; height: 60px; overflow: hidden;">
-                > [SYSTEM] Waiting for Input...
+        <section id="speedbot" class="view-section">
+            <div class="stat-grid">
+                <div class="stat-pill"><span class="stat-label">Runs</span><span class="stat-val" id="run-count">0</span></div>
+                <div class="stat-pill"><span class="stat-label">Profit</span><span class="stat-val" id="profit-val">$0.00</span></div>
             </div>
-        </div>
+            <div class="card">
+                <div class="header">Execution Engine</div>
+                <label class="stat-label">Market Symbol</label>
+                <select id="market" class="input-pill">
+                    <option value="1HZ10V">Volatility 10 (1s)</option>
+                    <option value="R_100">Volatility 100 Index</option>
+                </select>
+                <label class="stat-label">Stake Amount</label>
+                <input type="number" id="stake" class="input-pill" value="0.35">
+                
+                <button id="startBtn" class="btn btn-lime" onclick="toggleEngine(true)">Start Speedbot</button>
+                <button id="stopBtn" class="btn btn-red" onclick="toggleEngine(false)">Stop Engine</button>
+            </div>
+        </section>
 
-        <div class="sidebar">
-            <div class="settings-pill-box" style="border-color: var(--neon-blue);">
-                <div style="color: var(--neon-yellow); font-size: 10px; font-weight: 900;">LIVE EQUITY</div>
-                <div class="balance-display" id="balance">0.00 USD</div>
+        <section id="account" class="view-section">
+            <div class="card">
+                <div class="header">Account Security</div>
+                <div class="input-pill" style="border:none; background:#111">ID: <span id="user-id">DB-9799-PRO</span></div>
+                <div class="input-pill" style="border:none; background:#111">Status: <span style="color:var(--lime)">Verified</span></div>
+                <button class="btn" style="background:#222; color:white">Logout Terminal</button>
             </div>
-
-            <div class="settings-pill-box">
-                <div class="account-item">2FA <span>ACTIVE</span></div>
-                <div class="account-item" style="border:none">Session <span>STABLE</span></div>
-            </div>
-        </div>
+        </section>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         
+        // SDK CREDENTIALS
         const firebaseConfig = {
             apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
             authDomain: "dbautomaters.firebaseapp.com",
@@ -158,30 +117,74 @@
         };
         initializeApp(firebaseConfig);
 
-        const TOKEN = 'Kc9DWs8mdnEQRri'; 
-        let ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+        const TOKEN = 'Kc9DWs8mdnEQRri';
+        let ws, isRunning = false, baseStake = 0.35, currentStake = 0.35, runs = 0, totalProfit = 0;
 
-        ws.onopen = () => ws.send(JSON.stringify({ authorize: TOKEN }));
-        ws.onmessage = (msg) => {
-            const res = JSON.parse(msg.data);
-            if (res.msg_type === 'authorize') {
-                document.getElementById('balance').innerText = res.authorize.balance + " USD";
-            }
+        // 1. WebSocket Engine
+        function connect() {
+            ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+            ws.onopen = () => ws.send(JSON.stringify({ authorize: TOKEN }));
+            ws.onmessage = (msg) => {
+                const data = JSON.parse(msg.data);
+                if (data.msg_type === 'authorize') document.getElementById('wallet-bal').innerText = data.authorize.balance + " USD";
+                if (data.msg_type === 'proposal_open_contract' && data.proposal_open_contract.is_sold) handleTradeResult(data.proposal_open_contract);
+            };
+        }
+
+        // 2. Navigation Switcher
+        window.showView = (id) => {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+            if(id === 'bot-editor') setTimeout(() => Blockly.svgResize(workspace), 50);
+        }
+
+        // 3. Blockly Initialization
+        const workspace = Blockly.inject('blocklyDiv', {
+            toolbox: `<xml>
+                <block type="logic_compare"></block>
+                <block type="math_number"></block>
+                <block type="text"></block>
+            </xml>`,
+            theme: 'dark'
+        });
+
+        // 4. Execution Logic
+        window.toggleEngine = (state) => {
+            isRunning = state;
+            baseStake = parseFloat(document.getElementById('stake').value);
+            currentStake = baseStake;
+            document.getElementById('startBtn').style.display = state ? 'none' : 'block';
+            document.getElementById('stopBtn').style.display = state ? 'block' : 'none';
+            if(state) executeTrade();
         };
 
-        window.launchBot = () => {
-            const stake = document.getElementById('stake').value;
+        function executeTrade() {
+            if(!isRunning) return;
             ws.send(JSON.stringify({
-                buy: 1, price: parseFloat(stake),
+                buy: 1, price: currentStake,
                 parameters: {
-                    amount: parseFloat(stake), basis: 'stake',
-                    contract_type: document.getElementById('contract').value,
-                    currency: 'USD', duration: parseInt(document.getElementById('ticks').value),
-                    duration_unit: 't', symbol: document.getElementById('market').value
-                }
+                    amount: currentStake, basis: 'stake', contract_type: 'DIGITEVEN',
+                    currency: 'USD', duration: 1, duration_unit: 't', symbol: document.getElementById('market').value
+                },
+                subscribe: 1
             }));
-            document.getElementById('log').innerHTML = "> [NODE] Trade Injected...";
-        };
+        }
+
+        function handleTradeResult(contract) {
+            runs++;
+            totalProfit += parseFloat(contract.profit);
+            if (contract.status === 'lost') currentStake = (currentStake * 2.1).toFixed(2);
+            else currentStake = baseStake;
+            
+            document.getElementById('run-count').innerText = runs;
+            document.getElementById('profit-val').innerText = "$" + totalProfit.toFixed(2);
+            ws.send(JSON.stringify({ authorize: TOKEN })); // Refresh Balance
+            if(isRunning) setTimeout(executeTrade, 2000);
+        }
+
+        connect();
     </script>
 </body>
 </html>
