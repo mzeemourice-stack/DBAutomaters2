@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBAutomaters | Institutional Trading</title>
+    <title>DBAutomaters | Institutional Precision</title>
+    
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     
@@ -12,21 +13,21 @@
             --neon-blue: #00d2ff;
             --neon-sky: #00ebff;
             --neon-green: #39ff14;
-            --neon-yellow: rgba(254, 254, 0, 0.8);
-            --neon-yellow-glow: #fefe00;
+            --neon-yellow: #fefe00;
+            --glass-yellow: rgba(254, 254, 0, 0.15);
         }
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Inter', sans-serif;
-            background-color: #050505;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #000;
             color: white;
             overflow: hidden;
         }
 
-        /* Background */
+        /* Background Image Logic */
         .bg-container {
             position: fixed;
             top: 0;
@@ -44,182 +45,197 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(10,10,10,0.6) 0%, rgba(0,0,0,0.9) 100%);
+            background: radial-gradient(circle, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.95) 100%);
         }
 
-        /* Top Left Section */
-        .top-left-section {
+        /* Top Left Brand Box */
+        .brand-section {
             position: absolute;
             top: 25px;
             left: 25px;
             z-index: 10;
         }
 
-        .header-box {
+        .brand-box {
             padding: 8px 18px;
             border: 2px solid var(--neon-green);
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 0 15px var(--neon-green);
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-weight: 800;
+            font-size: 1.2rem;
             margin-bottom: 12px;
             display: inline-block;
+            background: rgba(0,0,0,0.5);
         }
 
-        .sub-header-box {
+        .sub-brand-box {
             padding: 6px 14px;
             border-radius: 8px;
-            border: 1px solid var(--neon-sky);
+            border: 1.5px solid var(--neon-sky);
             box-shadow: 0 0 15px var(--neon-sky);
-            animation: bounceLoop 2.5s infinite ease-in-out;
-            background: rgba(0, 0, 0, 0.6);
+            animation: bounceLoop 3s infinite ease-in-out;
+            background: rgba(0, 0, 0, 0.7);
             font-size: 0.85rem;
             display: block;
         }
 
-        /* Main Center Content */
-        .main-content {
+        /* Center Content */
+        .main-hero {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             text-align: center;
+            padding: 0 20px;
         }
 
-        .trusted-pill-main {
+        .trusted-pill {
             background: rgba(57, 255, 20, 0.1);
-            padding: 5px 20px;
+            padding: 6px 22px;
             border-radius: 50px;
             border: 1px solid var(--neon-green);
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-            transition: 0.3s;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            text-transform: lowercase;
         }
 
-        .main-logo {
-            font-size: 4.5rem;
-            font-weight: 800;
-            animation: slowBounce 4s infinite ease-in-out;
-            margin: 0;
-        }
-
-        .tagline {
-            font-size: 0.65rem;
-            letter-spacing: 1.5px;
-            margin-top: 10px;
-            text-transform: uppercase;
-            color: #ccc;
-        }
-
-        /* Floating Stats Pill Container */
-        .stats-pill-container {
-            display: flex;
-            gap: 40px;
-            margin-top: 30px;
-            padding: 15px 45px;
-            border-radius: 50px;
-            border: 1.5px solid rgba(57, 255, 20, 0.4);
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            animation: float 6s infinite ease-in-out;
-            align-items: center;
-        }
-
-        .stat-group { display: flex; flex-direction: column; }
-        .stat-value { color: #fefe00; font-size: 1.5rem; font-weight: 700; }
-        .stat-desc { font-size: 0.65rem; text-transform: lowercase; opacity: 0.7; }
-
-        /* Interactive Buttons */
-        .btn-pill {
-            text-decoration: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: 0.3s;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .start-btn {
-            border: 1px solid var(--neon-green);
-            color: var(--neon-green);
-            background: transparent;
-        }
-
-        .start-btn:hover {
-            background: var(--neon-green);
-            color: black;
-            box-shadow: 0 0 20px var(--neon-green);
-        }
-
-        .login-btn {
-            background: rgba(254, 254, 0, 0.15);
-            border: 1px solid var(--neon-yellow-glow);
-            color: var(--neon-yellow-glow);
-            margin-top: 25px;
-        }
-
-        .login-btn:hover {
-            background: var(--neon-yellow-glow);
-            color: black;
-            box-shadow: 0 0 25px var(--neon-yellow-glow);
+        .trusted-pill:hover {
+            background: rgba(57, 255, 20, 0.3);
+            box-shadow: 0 0 25px var(--neon-green);
             transform: scale(1.05);
         }
 
-        /* Helpers & Animations */
-        .green { color: var(--neon-green); }
-        .blue { color: var(--neon-blue); }
-        .glow-uptime { text-shadow: 0 0 10px var(--neon-green); }
-        .sky-split {
+        .logo-text {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            animation: slowBounce 5s infinite ease-in-out;
+            margin: 10px 0;
+            letter-spacing: -2px;
+        }
+
+        .small-tagline {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #aaa;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        /* Floating Stats Pill Container */
+        .stats-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 35px;
+            padding: 18px 45px;
+            border-radius: 60px;
+            border: 2px solid rgba(57, 255, 20, 0.35);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            animation: floatUI 6s infinite ease-in-out;
+            align-items: center;
+        }
+
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-num { color: var(--neon-yellow); font-size: 1.6rem; font-weight: 800; animation: pulseYellow 3s infinite; }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; opacity: 0.8; margin-top: 4px; }
+
+        /* Buttons */
+        .btn {
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: 0.4s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .start-now {
+            background: var(--neon-green);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .start-now:hover {
+            box-shadow: 0 0 30px var(--neon-green);
+            transform: scale(1.1);
+        }
+
+        .login-pill {
+            background: var(--glass-yellow);
+            border: 1.5px solid var(--neon-yellow);
+            color: var(--neon-yellow);
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(254, 254, 0, 0.2);
+        }
+
+        .login-pill:hover {
+            background: var(--neon-yellow);
+            color: black;
+            box-shadow: 0 0 30px var(--neon-yellow);
+            transform: translateY(-5px);
+        }
+
+        /* Utils & Animations */
+        .txt-green { color: var(--neon-green); }
+        .txt-blue { color: var(--neon-blue); }
+        .uptime-glow { text-shadow: 0 0 15px var(--neon-green); }
+        .split-grad {
             background: linear-gradient(90deg, var(--neon-green) 50%, var(--neon-sky) 50%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        @keyframes bounceLoop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
-        @keyframes slowBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes bounceLoop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
+        @keyframes slowBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes pulseYellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
     </style>
 </head>
 <body>
 
     <div class="bg-container"><div class="overlay"></div></div>
 
-    <div class="top-left-section">
-        <div class="header-box"><span class="green">DB</span><span class="blue">Automater</span></div>
-        <div class="sub-header-box"><span class="sky-split">Institutional Precision II Smart Automate Trades</span></div>
+    <div class="brand-section">
+        <div class="brand-box"><span class="txt-green">DB</span><span class="txt-blue">Automater</span></div>
+        <div class="sub-brand-box"><span class="split-grad">Institutional Precision II Smart Automate Trades</span></div>
     </div>
 
-    <div class="main-content">
-        <div class="trusted-pill-main">trusted by +50,000 traders globally</div>
+    <div class="main-hero">
+        <div class="trusted-pill">trusted by +50,000 traders globally</div>
         
-        <h1 class="main-logo"><span class="green">DB</span><span class="blue">Automaters</span></h1>
-        <div class="tagline">The future is automate trading with Our performance Expert Advisors</div>
+        <h1 class="logo-text"><span class="txt-green">DB</span><span class="txt-blue">Automaters</span></h1>
+        
+        <p class="small-tagline">The future is automate trading with Our performance Expert Advisors</p>
 
-        <div class="stats-pill-container">
-            <div class="stat-group">
-                <span class="stat-value">+50.0K</span>
-                <span class="stat-desc">live traders</span>
+        <div class="stats-wrapper">
+            <div class="stat-item">
+                <span class="stat-num">+50.0K</span>
+                <span class="stat-label">live traders</span>
             </div>
-            <div class="stat-group">
-                <span class="stat-value">+2.8B ++</span>
-                <span class="stat-desc">trading volume</span>
+            <div class="stat-item">
+                <span class="stat-num">+2.8B ++</span>
+                <span class="stat-label">trading volume</span>
             </div>
-            <div class="stat-group">
-                <span class="stat-value glow-uptime">99.99%</span>
-                <span class="stat-desc">uptime</span>
+            <div class="stat-item">
+                <span class="stat-num uptime-glow">99.99%</span>
+                <span class="stat-label">uptime</span>
             </div>
-            <a href="trading.html" class="btn-pill start-btn">start trading now</a>
+            <a href="trading.html" class="btn start-now">start trading now —&gt;</a>
         </div>
 
-        <div id="login-trigger" class="btn-pill login-btn">Login Now</div>
+        <button id="loginBtn" class="btn login-pill">Login Now</button>
     </div>
 
     <script>
-        // Your Firebase Configuration
+        // Firebase Config
         const firebaseConfig = {
           apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
           authDomain: "dbautomaters.firebaseapp.com",
@@ -231,16 +247,12 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // Handle Login Click
-        document.getElementById('login-trigger').onclick = function() {
-            // This will redirect to your specific Firebase Auth Domain
-            window.location.href = "https://" + firebaseConfig.authDomain + "/login";
-            
-            // NOTE: If you have a specific custom page for account creation, 
-            // you can change the URL above to that link.
-        };
+        
+        // Button Logic
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            // Redirect to your authorized Firebase Auth domain
+            window.location.href = `https://${firebaseConfig.authDomain}/login`;
+        });
     </script>
 </body>
 </html>
