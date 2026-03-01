@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DBAutomaters | Secure Portal</title>
+    <title>DBAutomaters | Member Login</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: rgba(20, 20, 20, 0.9); padding: 40px; border-radius: 20px; border: 1px solid #39ff14; text-align: center; width: 320px; box-shadow: 0 0 30px rgba(57, 255, 20, 0.1); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: #00d2ff; }
-        .btn { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .login { background: #39ff14; color: black; }
-        .signup { background: transparent; color: #00d2ff; border: 1px solid #00d2ff; margin-top: 15px; }
+        body { margin: 0; background: #0a0a0a; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; }
+        .card { background: rgba(20, 20, 20, 0.8); padding: 40px; border-radius: 20px; border: 1px solid #39ff14; width: 340px; text-align: center; box-shadow: 0 0 30px rgba(57, 255, 20, 0.1); }
+        h2 { color: #00d2ff; margin-bottom: 25px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 14px; margin-top: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .login-btn { background: #39ff14; color: black; }
+        .signup-btn { background: transparent; color: #00d2ff; border: 1px solid #00d2ff; }
         .btn:hover { opacity: 0.8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 style="color:#00d2ff">Member Login</h2>
+        <h2>Member Login</h2>
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
-        <button class="btn login" onclick="login()">LOGIN</button>
-        <button class="btn signup" onclick="signup()">CREATE ACCOUNT</button>
+        <button class="btn login-btn" onclick="login()">LOGIN</button>
+        <button class="btn signup-btn" onclick="signup()">CREATE ACCOUNT</button>
     </div>
 
     <script>
@@ -37,17 +37,15 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        const nextPage = "/DBAutomaters2/trading.html";
-
         function signup() {
             auth.createUserWithEmailAndPassword(email.value, password.value)
-                .then(() => window.location.href = nextPage)
+                .then(() => window.location.href = "/DBAutomaters2/trading.html")
                 .catch(err => alert(err.message));
         }
 
         function login() {
             auth.signInWithEmailAndPassword(email.value, password.value)
-                .then(() => window.location.href = nextPage)
+                .then(() => window.location.href = "/DBAutomaters2/trading.html")
                 .catch(err => alert(err.message));
         }
     </script>
