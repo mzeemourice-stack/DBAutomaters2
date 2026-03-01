@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DBAutomaters | Terminal</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <style>
+        body { background: #000; color: white; font-family: sans-serif; margin: 0; }
+        .navbar { height: 60px; background: #111; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #39ff14; }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #tradingview_widget { height: calc(100vh - 60px); width: 100%; }
+        .loader { height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #39ff14; }
+    </style>
+</head>
+<body>
+    
+    <div id="loading" class="loader">Verifying Access...</div>
+
+    <div id="main-ui" style="display:none;">
+        <div class="navbar">
+            <div style="font-weight:bold; color:#39ff14;">DB TERMINAL <span id="userDisp" style="color:#00d2ff; font-size:0.8rem; margin-left:15px;"></span></div>
+            <button class="logout-btn" onclick="logout()">SIGN OUT</button>
+        </div>
+        
+        <div id="tradingview_widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
+            authDomain: "dbautomaters.firebaseapp.com",
+            projectId: "dbautomaters",
+            storageBucket: "dbautomaters.firebasestorage.app",
+            messagingSenderId: "979994954651",
+            appId: "1:979994954651:web:476730aa83893ed7716f3e"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Security Guard Logic
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-ui').style.display = 'block';
+                document.getElementById('userDisp').innerText = "Account: " + user.email;
+                
+                // Load the Chart
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "FX:EURUSD",
+                    "interval": "D",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "container_id": "tradingview_widget"
+                });
+            } else {
+                window.location.href = "/DBAutomaters2/login.html";
+            }
+        });
+
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = "/DBAutomaters2/index.html";
+            });
+        }
+    </script>
+</body>
+</html>
