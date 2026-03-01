@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DBAutomaters | Institutional Trading</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
     <style>
         :root {
             --neon-blue: #00d2ff;
@@ -17,7 +20,7 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #050505;
             color: white;
             overflow: hidden;
@@ -95,11 +98,6 @@
             cursor: pointer;
         }
 
-        .trusted-pill-main:hover {
-            background: rgba(57, 255, 20, 0.3);
-            box-shadow: 0 0 20px var(--neon-green);
-        }
-
         .main-logo {
             font-size: 4.5rem;
             font-weight: 800;
@@ -142,11 +140,13 @@
             font-size: 0.9rem;
             transition: 0.3s;
             cursor: pointer;
+            display: inline-block;
         }
 
         .start-btn {
             border: 1px solid var(--neon-green);
             color: var(--neon-green);
+            background: transparent;
         }
 
         .start-btn:hover {
@@ -156,25 +156,23 @@
         }
 
         .login-btn {
-            background: rgba(254, 254, 0, 0.2);
+            background: rgba(254, 254, 0, 0.15);
             border: 1px solid var(--neon-yellow-glow);
             color: var(--neon-yellow-glow);
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .login-btn:hover {
             background: var(--neon-yellow-glow);
             color: black;
-            box-shadow: 0 0 20px var(--neon-yellow-glow);
-            transform: translateY(-3px);
+            box-shadow: 0 0 25px var(--neon-yellow-glow);
+            transform: scale(1.05);
         }
 
-        /* Glow Text for Uptime */
-        .glow-uptime { text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-sky); }
-
-        /* Helpers */
+        /* Helpers & Animations */
         .green { color: var(--neon-green); }
         .blue { color: var(--neon-blue); }
+        .glow-uptime { text-shadow: 0 0 10px var(--neon-green); }
         .sky-split {
             background: linear-gradient(90deg, var(--neon-green) 50%, var(--neon-sky) 50%);
             -webkit-background-clip: text;
@@ -199,7 +197,6 @@
         <div class="trusted-pill-main">trusted by +50,000 traders globally</div>
         
         <h1 class="main-logo"><span class="green">DB</span><span class="blue">Automaters</span></h1>
-
         <div class="tagline">The future is automate trading with Our performance Expert Advisors</div>
 
         <div class="stats-pill-container">
@@ -207,22 +204,43 @@
                 <span class="stat-value">+50.0K</span>
                 <span class="stat-desc">live traders</span>
             </div>
-            
             <div class="stat-group">
                 <span class="stat-value">+2.8B ++</span>
                 <span class="stat-desc">trading volume</span>
             </div>
-
             <div class="stat-group">
                 <span class="stat-value glow-uptime">99.99%</span>
                 <span class="stat-desc">uptime</span>
             </div>
-
-            <a href="trading.html" target="_blank" class="btn-pill start-btn">start trading now</a>
+            <a href="trading.html" class="btn-pill start-btn">start trading now</a>
         </div>
 
-        <a href="https://your-firebase-app-url.web.app/login" class="btn-pill login-btn">Login Now</a>
+        <div id="login-trigger" class="btn-pill login-btn">Login Now</div>
     </div>
 
+    <script>
+        // Your Firebase Configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
+          authDomain: "dbautomaters.firebaseapp.com",
+          projectId: "dbautomaters",
+          storageBucket: "dbautomaters.firebasestorage.app",
+          messagingSenderId: "979994954651",
+          appId: "1:979994954651:web:476730aa83893ed7716f3e"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Handle Login Click
+        document.getElementById('login-trigger').onclick = function() {
+            // This will redirect to your specific Firebase Auth Domain
+            window.location.href = "https://" + firebaseConfig.authDomain + "/login";
+            
+            // NOTE: If you have a specific custom page for account creation, 
+            // you can change the URL above to that link.
+        };
+    </script>
 </body>
 </html>
