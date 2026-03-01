@@ -2,70 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA ACCESS | Secure Login</title>
+    <title>DBAutomaters | Secure Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-deep: #050505; --neon-yellow: #fefe00; --neon-lime: #39ff14; --neon-blue: #00d2ff; }
-        body { margin: 0; background: var(--bg-deep); color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        :root { 
+            --bg: #050505; --lime: #39ff14; --blue: #00d2ff; --yellow: #fefe00; 
+        }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
         
         .login-card {
-            background: #111; border: 2px solid var(--neon-lime); border-radius: 40px;
+            background: #0f0f0f; border: 2px solid var(--lime); border-radius: 45px;
             width: 380px; padding: 45px; text-align: center;
-            box-shadow: 0 0 30px rgba(57, 255, 20, 0.3);
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
         }
         
-        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--neon-yellow); margin-bottom: 35px; text-shadow: 0 0 10px var(--neon-yellow); }
+        .brand { font-family: 'Orbitron', sans-serif; color: var(--yellow); margin-bottom: 30px; font-size: 1.5rem; letter-spacing: 2px; }
         
         .social-pill {
             display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; 
             padding: 14px; margin-bottom: 12px; border-radius: 50px; 
-            border: 1px solid #333; background: transparent; color: white; 
-            cursor: pointer; font-weight: 600; transition: 0.3s;
+            border: 1px solid #333; background: transparent; color: white; cursor: pointer; transition: 0.3s;
         }
-        .social-pill:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); color: var(--neon-blue); }
-
-        .divider { color: #555; font-size: 0.7rem; margin: 25px 0; letter-spacing: 2px; font-weight: bold; }
+        .social-pill:hover { border-color: var(--blue); box-shadow: 0 0 15px var(--blue); color: var(--blue); }
 
         .pill-input {
             width: 100%; padding: 16px 25px; background: #000; 
-            border: 1px solid #222; border-radius: 50px; color: white; 
-            margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s;
+            border: 1px solid #222; border-radius: 50px; color: var(--yellow); 
+            margin-bottom: 15px; box-sizing: border-box; outline: none;
         }
-        .pill-input:focus { border-color: var(--neon-yellow); box-shadow: 0 0 15px rgba(254, 254, 0, 0.2); }
+        .pill-input:focus { border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
 
         .btn-main {
-            width: 100%; padding: 18px; background: var(--neon-lime); color: black;
+            width: 100%; padding: 18px; background: var(--lime); color: black;
             border: none; border-radius: 50px; font-weight: 900; 
-            font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 20px var(--neon-lime); transition: 0.3s;
+            font-family: 'Orbitron', sans-serif; cursor: pointer;
+            box-shadow: 0 0 20px var(--lime);
         }
-        .btn-main:hover { transform: scale(1.02); filter: brightness(1.1); }
     </style>
 </head>
 <body>
-
     <div class="login-card">
-        <div class="brand">DB EA ACCESS</div>
-
+        <div class="brand">DBAUTOMATERS</div>
+        
         <button class="social-pill" id="appleBtn"><i class="fa-brands fa-apple"></i> Continue with Apple</button>
         <button class="social-pill" id="googleBtn"><i class="fa-brands fa-google" style="color:#ea4335"></i> Continue with Google</button>
-
-        <div class="divider">SECURE GATEWAY</div>
-
+        
+        <div style="color:var(--blue); font-size:10px; margin:20px 0; letter-spacing:2px; font-weight:bold;">SECURE ACCESS</div>
+        
         <input type="text" id="userEmail" class="pill-input" placeholder="Phone or Email">
         <input type="password" id="userPass" class="pill-input" placeholder="Password">
-
+        
         <button class="btn-main" id="loginBtn">Initialize Session</button>
-        <p style="margin-top:25px; font-size:0.8rem; color:#666;">New user? <span style="color:var(--neon-yellow); cursor:pointer;">Create Account</span></p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-        // YOUR VERIFIED SDK CODE
         const firebaseConfig = {
             apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
             authDomain: "dbautomaters.firebaseapp.com",
@@ -74,19 +68,17 @@
             messagingSenderId: "979994954651",
             appId: "1:979994954651:web:476730aa83893ed7716f3e"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
         document.getElementById('googleBtn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).then(() => window.location.href="trading.html");
         document.getElementById('appleBtn').onclick = () => signInWithPopup(auth, new OAuthProvider('apple.com')).then(() => window.location.href="trading.html");
-
+        
         document.getElementById('loginBtn').onclick = () => {
             const email = document.getElementById('userEmail').value;
             const pass = document.getElementById('userPass').value;
-            // Handle phone inputs by mapping to a virtual domain if no '@' is present
-            const formattedID = email.includes('@') ? email : `${email}@dbautomaters.com`;
-            signInWithEmailAndPassword(auth, formattedID, pass)
+            const formattedEmail = email.includes('@') ? email : `${email}@dbautomaters.com`;
+            signInWithEmailAndPassword(auth, formattedEmail, pass)
                 .then(() => window.location.href="trading.html")
                 .catch((err) => alert("Error: " + err.message));
         };
