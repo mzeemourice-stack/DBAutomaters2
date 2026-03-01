@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA Terminal | Dashboard</title>
+    <title>DB EA Terminal | Secure Access</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -12,183 +12,185 @@
         :root { 
             --neon-green: #39ff14; --neon-blue: #00d2ff; --neon-yellow: #fefe00; --dark-bg: #050505;
         }
-        body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* HEADER AREA */
+        /* --- FUTURISTIC LOADER CSS --- */
+        #loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: opacity 1s ease;
+        }
+        .ring {
+            width: 120px; height: 120px; border: 3px solid transparent;
+            border-top: 3px solid var(--neon-yellow); border-radius: 50%;
+            animation: spin 1s linear infinite; position: relative;
+        }
+        .ring::after {
+            content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px solid transparent; border-bottom: 2px solid var(--neon-blue);
+            border-radius: 50%; animation: spin 2s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loading-text {
+            margin-top: 30px; font-family: monospace; color: var(--neon-yellow);
+            letter-spacing: 4px; font-size: 0.7rem; text-transform: uppercase;
+        }
+
+        /* --- MAIN TERMINAL CSS --- */
+        body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .header { height: 70px; background: #000; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
         
         .brand-pill {
-            padding: 8px 20px; border: 2px solid var(--neon-yellow); border-radius: 50px;
-            color: var(--neon-yellow); font-weight: 900; letter-spacing: 1.5px;
-            text-transform: uppercase; background: rgba(254, 254, 0, 0.05);
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.4); animation: hoverAnim 3s infinite ease-in-out;
+            padding: 8px 22px; border: 2px solid var(--neon-yellow); border-radius: 50px;
+            color: var(--neon-yellow); font-weight: 900; letter-spacing: 2px;
+            background: rgba(254, 254, 0, 0.05); box-shadow: 0 0 15px rgba(254, 254, 0, 0.3);
+            animation: hoverAnim 3s infinite ease-in-out;
         }
         @keyframes hoverAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        .balance-pill { color: var(--neon-blue); font-weight: bold; font-size: 1.1rem; border: 1px solid var(--neon-blue); padding: 5px 15px; border-radius: 50px; }
+        .balance-pill { color: var(--neon-blue); font-weight: bold; border: 1px solid var(--neon-blue); padding: 5px 18px; border-radius: 50px; }
 
-        /* MAIN CONTENT AREA */
-        .main-container { display: flex; flex: 1; }
-
-        /* SIDEBAR */
+        .workspace { display: flex; flex: 1; }
         .sidebar { width: 330px; background: #0a0a0a; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
-        .card { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; }
-        .card h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        
-        input { width: 100%; padding: 10px; margin-bottom: 8px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; font-size: 0.8rem; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 5px; }
+        .card { background: #111; border: 1px solid #222; padding: 18px; border-radius: 12px; }
+        .card h4 { margin: 0 0 12px 0; font-size: 0.7rem; color: #777; text-transform: uppercase; }
+
+        input { width: 100%; padding: 10px; margin-bottom: 8px; background: #000; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn-green { background: var(--neon-green); color: black; }
         .btn-blue { background: var(--neon-blue); color: black; }
         .btn-outline { background: transparent; border: 1px solid #444; color: white; }
-        
-        /* CHART AREA */
-        .chart-area { flex: 1; padding: 15px; background: #000; display: flex; flex-direction: column; }
-        #tv_widget_container { flex: 1; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
 
-        .status-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-top: 10px; font-weight: bold; }
-        .inactive { background: rgba(255,0,0,0.1); color: #ff4444; border: 1px solid #ff4444; }
-        .active { background: rgba(57,255,20,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .chart-container { flex: 1; padding: 15px; background: #000; }
+        #tradingview_widget { width: 100%; height: 550px; border-radius: 10px; border: 1px solid #222; }
+
+        /* Status tags */
+        .status { font-size: 0.6rem; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-top: 10px; font-weight: bold; }
+        .offline { background: rgba(255,0,0,0.1); color: #ff4444; border: 1px solid #ff4444; }
+        .online { background: rgba(57,255,20,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
     </style>
 </head>
 <body>
 
+    <div id="loader-overlay">
+        <div class="ring"></div>
+        <div class="loading-text" id="status-msg">AUTHENTICATING...</div>
+    </div>
+
     <div class="header">
         <div class="brand-pill">DB EA TERMINAL</div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <div class="balance-pill" id="liveBalance">$0.00</div>
-            <button onclick="logout()" class="btn-outline" style="padding: 5px 12px; font-size: 0.7rem;">Exit</button>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="balance-pill" id="live-bal">Balance: $0.00</div>
+            <button onclick="logout()" class="btn-outline" style="font-size: 0.7rem; padding: 6px 12px;">Logout</button>
         </div>
     </div>
 
-    <div class="main-container">
+    <div class="workspace">
         <div class="sidebar">
             <div class="card">
-                <h4>Wallet & Funding</h4>
-                <button class="btn btn-green" onclick="alert('Redirecting to M-Pesa Payment Gateway...')">Deposit Funds</button>
-                <button class="btn btn-outline" onclick="alert('Requesting Withdrawal...')">Withdraw</button>
+                <h4>Finance</h4>
+                <button class="btn btn-green" onclick="alert('Redirecting to M-Pesa...')">Deposit</button>
+                <button class="btn btn-outline" onclick="alert('Withdrawal Request Sent')">Withdraw</button>
             </div>
 
             <div class="card">
-                <h4>Link MT5 Account</h4>
-                <input type="text" id="mt5_id" placeholder="MT5 Login ID">
-                <input type="password" id="mt5_pass" placeholder="Trading Password">
-                <input type="text" id="mt5_server" placeholder="Server (e.g. Exness-Real)">
-                <button class="btn btn-outline" onclick="saveMT5()">Save Account Access</button>
+                <h4>MT5 Access Configuration</h4>
+                <input type="text" id="m_id" placeholder="MT5 Login ID">
+                <input type="password" id="m_pass" placeholder="Trading Password">
+                <input type="text" id="m_serv" placeholder="Broker Server">
+                <button class="btn btn-outline" onclick="saveAccess()">Link EA Access</button>
             </div>
 
             <div class="card">
                 <h4>EA Subscription</h4>
-                <p style="font-size: 0.7rem; color: #666;">Fee: <b>$2.50 / Week</b></p>
-                <button class="btn btn-blue" id="activateBtn" onclick="payAndActivate()">Activate Paid EA</button>
-                <div id="eaStatus" class="status-badge inactive">EA: DISCONNECTED</div>
-            </div>
-
-            <div class="card">
-                <h4>Practice Mode</h4>
-                <button class="btn btn-outline" onclick="alert('Demo trading activated with $10,000')">Run Demo Trade</button>
+                <p style="font-size: 0.7rem; color: #555;">Live Trading Fee: <b>$2.50 / Week</b></p>
+                <button class="btn btn-blue" id="subBtn" onclick="activateEA()">Activate EA Access</button>
+                <div id="ea-status" class="status offline">EA DISCONNECTED</div>
             </div>
         </div>
 
-        <div class="chart-area">
-            <div id="tv_widget_container"></div>
+        <div class="chart-container">
+            <div id="tradingview_widget"></div>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // CONFIG
+        // FIREBASE CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
-            authDomain: "dbautomaters.firebaseapp.com",
-            projectId: "dbautomaters",
-            storageBucket: "dbautomaters.firebasestorage.app",
-            messagingSenderId: "979994954651",
-            appId: "1:979994954651:web:476730aa83893ed7716f3e"
+          apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
+          authDomain: "dbautomaters.firebaseapp.com",
+          projectId: "dbautomaters",
+          storageBucket: "dbautomaters.firebasestorage.app",
+          messagingSenderId: "979994954651",
+          appId: "1:979994954651:web:476730aa83893ed7716f3e"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // 1. Initialise Chart
-        function initChart() {
+        // LOADER SCRIPT
+        window.addEventListener('load', () => {
+            const msgs = ["SYNCING CORE...", "ENCRYPTING DATA...", "ACCESS GRANTED"];
+            let i = 0;
+            const interval = setInterval(() => {
+                document.getElementById('status-msg').innerText = msgs[i];
+                i++;
+                if(i >= msgs.length) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loader-overlay').style.opacity = '0';
+                        setTimeout(() => document.getElementById('loader-overlay').style.display='none', 1000);
+                    }, 500);
+                }
+            }, 700);
+        });
+
+        // TRADINGVIEW
+        function loadChart() {
             new TradingView.widget({
-                "width": "100%",
-                "height": "100%",
-                "symbol": "FX:EURUSD",
-                "interval": "30",
-                "theme": "dark",
-                "style": "1",
-                "container_id": "tv_widget_container",
-                "allow_symbol_change": true,
-                "details": true,
-                "hotlist": true
+                "width": "100%", "height": 550, "symbol": "FX:EURUSD",
+                "interval": "H1", "theme": "dark", "style": "1",
+                "container_id": "tradingview_widget", "allow_symbol_change": true
             });
         }
 
-        // 2. Auth & Real-Time Balance Sync
+        // FIREBASE SYNC
         auth.onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = "login.html";
             } else {
-                initChart();
-                // Listen for balance and status changes in Firestore
+                loadChart();
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if (doc.exists) {
                         const data = doc.data();
-                        document.getElementById('liveBalance').innerText = `$${data.balance.toFixed(2)}`;
-                        
-                        const status = document.getElementById('eaStatus');
-                        const actBtn = document.getElementById('activateBtn');
-                        
+                        document.getElementById('live-bal').innerText = `Balance: $${data.balance.toFixed(2)}`;
                         if(data.ea_active) {
-                            status.innerText = "EA: ACTIVE & TRADING";
-                            status.className = "status-badge active";
-                            actBtn.innerText = "EA RUNNING";
-                            actBtn.disabled = true;
-                            actBtn.style.opacity = "0.5";
+                            const tag = document.getElementById('ea-status');
+                            tag.innerText = "EA ACTIVE";
+                            tag.className = "status online";
+                            document.getElementById('subBtn').disabled = true;
                         }
                     } else {
-                        // Setup new user document
                         db.collection("users").doc(user.uid).set({ balance: 0.00, ea_active: false });
                     }
                 });
             }
         });
 
-        // 3. Save MT5 Access Details
-        async function saveMT5() {
+        async function saveAccess() {
             const user = auth.currentUser;
-            const login = document.getElementById('mt5_id').value;
-            const pass = document.getElementById('mt5_pass').value;
-            const serv = document.getElementById('mt5_server').value;
-
-            if(!login || !pass || !serv) return alert("Fill all MT5 fields");
-
-            await db.collection("users").doc(user.uid).update({
-                mt5_access: { id: login, pass: pass, server: serv }
-            });
-            alert("MT5 Access Saved. You can now activate the EA.");
+            const details = { id: document.getElementById('m_id').value, pass: document.getElementById('m_pass').value, server: document.getElementById('m_serv').value };
+            await db.collection("users").doc(user.uid).update({ mt5_creds: details });
+            alert("MT5 Access Linked Successfully.");
         }
 
-        // 4. Handle EA Activation ($2.50 Logic)
-        async function payAndActivate() {
+        async function activateEA() {
             const user = auth.currentUser;
-            const userDoc = await db.collection("users").doc(user.uid).get();
-            const currentBal = userDoc.data().balance;
-
-            if (currentBal >= 2.50) {
-                if(confirm("Deduct $2.50 from your balance to start 7 days of EA trading?")) {
-                    // Update DB - In a real app, do this on the server for security
-                    await db.collection("users").doc(user.uid).update({
-                        balance: currentBal - 2.50,
-                        ea_active: true,
-                        expiry: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))
-                    });
-                    alert("EA Successfully Activated!");
-                }
-            } else {
-                alert("Insufficient Funds. Please deposit at least $2.50");
-            }
+            const doc = await db.collection("users").doc(user.uid).get();
+            if(doc.data().balance >= 2.50) {
+                await db.collection("users").doc(user.uid).update({ balance: doc.data().balance - 2.50, ea_active: true });
+                alert("EA Activated for 7 days!");
+            } else { alert("Insufficient Funds ($2.50 required)"); }
         }
 
         function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
