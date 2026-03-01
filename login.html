@@ -3,140 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA | Terminal Access</title>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <title>DB EA | Secure Access</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
-            --neon-yellow: #fefe00;
-            --neon-lime: #39ff14;
-            --neon-blue: #00d2ff;
-            --dark-bg: #050505;
+            --neon-yellow: #fefe00; --neon-blue: #00d2ff; --dark-bg: #050505;
         }
 
         body {
-            margin: 0; background: var(--dark-bg); color: white;
-            font-family: 'Inter', sans-serif; display: flex;
-            align-items: center; justify-content: center; height: 100vh;
+            margin: 0; padding: 0; background: var(--dark-bg);
+            font-family: 'Inter', sans-serif; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; perspective: 1000px;
         }
 
-        /* THE GLOWING CARD */
-        .auth-card {
-            width: 380px; padding: 40px; background: rgba(10, 10, 10, 0.9);
-            border: 1px solid var(--neon-lime); border-radius: 25px;
-            box-shadow: 0 0 30px rgba(57, 255, 20, 0.15); text-align: center;
+        /* --- BACKGROUND PARTICLES --- */
+        .warp-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            z-index: -1;
         }
 
-        .auth-pill {
-            display: inline-block; padding: 8px 25px; border: 2px solid var(--neon-yellow);
-            border-radius: 50px; color: var(--neon-yellow); font-weight: 900;
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.3);
+        /* --- LOGIN CARD --- */
+        .login-card {
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px; border-radius: 24px; width: 360px;
+            backdrop-filter: blur(15px); text-align: center;
+            animation: cardSlideIn 0.8s ease-out forwards;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
-        h2 { color: var(--neon-blue); font-size: 1.2rem; letter-spacing: 3px; margin-bottom: 25px; }
+        @keyframes cardSlideIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
-        .input-group { margin-bottom: 15px; text-align: left; }
+        .brand {
+            font-weight: 900; letter-spacing: 4px; color: var(--neon-yellow);
+            font-size: 1.6rem; margin-bottom: 30px;
+            background: linear-gradient(90deg, #fefe00, #fff, #fefe00);
+            background-size: 200% auto; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* --- SSO BUTTONS (Google & Apple) --- */
+        .sso-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        
+        .sso-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 12px; border-radius: 12px; border: 1px solid #333;
+            background: #111; color: white; cursor: pointer; transition: 0.3s;
+            font-weight: 600; font-size: 0.9rem; text-decoration: none;
+        }
+        
+        .sso-btn:hover { background: #222; border-color: #555; transform: translateY(-2px); }
+        .sso-btn i { font-size: 1.2rem; }
+        .fa-google { color: #DB4437; } /* Google Red */
+
+        .divider { display: flex; align-items: center; color: #444; margin: 20px 0; font-size: 0.7rem; letter-spacing: 1px; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #222; margin: 0 10px; }
+
+        /* --- INPUT FIELDS --- */
+        .input-group { position: relative; margin-bottom: 20px; }
         input {
-            width: 100%; padding: 12px; background: #000; border: 1px solid #333;
-            border-radius: 12px; color: white; transition: 0.3s; box-sizing: border-box;
+            width: 100%; padding: 12px; background: #111;
+            border: 1px solid #222; color: white; border-radius: 10px;
+            outline: none; font-size: 0.9rem; transition: 0.4s; box-sizing: border-box;
         }
-        input:focus { border-color: var(--neon-blue); outline: none; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
+        input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
 
-        /* THE CLICKABLE PILLS */
-        .btn-auth {
-            width: 100%; padding: 15px; border-radius: 50px; border: none;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer; margin-top: 15px; transition: 0.4s;
-        }
-        .btn-login { 
-            background: var(--neon-lime); color: black; 
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4); 
-        }
-        .btn-login:hover { transform: scale(1.05); box-shadow: 0 0 35px rgba(57, 255, 20, 0.6); }
+        /* --- LOADING BAR --- */
+        #loading-zone { display: none; margin-top: 20px; }
+        .progress-bg { width: 100%; height: 4px; background: #222; border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--neon-yellow); transition: 0.1s; }
 
-        .btn-google {
-            background: white; color: #555; font-size: 0.8rem; margin-top: 10px;
+        .btn-login {
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
+            background: var(--neon-yellow); color: black; font-weight: 900;
+            text-transform: uppercase; cursor: pointer; letter-spacing: 1px; transition: 0.3s;
         }
+        .btn-login:hover { box-shadow: 0 0 20px var(--neon-yellow); transform: scale(1.02); }
 
-        .toggle-text {
-            margin-top: 20px; font-size: 0.8rem; color: #888; cursor: pointer;
-            transition: 0.3s; display: block;
-        }
-        .toggle-text span { color: var(--neon-blue); font-weight: bold; text-decoration: underline; }
-        .toggle-text:hover span { color: var(--neon-yellow); }
     </style>
 </head>
 <body>
 
-    <div class="auth-card">
-        <div class="auth-pill">DB EA TERMINAL</div>
-        <h2 id="auth-title">TERMINAL ACCESS</h2>
+    <div class="warp-bg" id="particles"></div>
 
-        <div class="input-group">
-            <input type="email" id="email" placeholder="Email Address">
-        </div>
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Password">
-        </div>
-
-        <button class="btn-auth btn-login" id="auth-btn" onclick="handleAuth()">Login / Sign Up</button>
+    <div class="login-card">
+        <div class="brand">DB EA ACCESS</div>
         
-        <div style="margin: 20px 0; color: #444; font-size: 0.7rem;">OR</div>
+        <div class="sso-container">
+            <a href="#" class="sso-btn" onclick="startLoading()">
+                <i class="fab fa-apple"></i> Sign in with Apple
+            </a>
+            <a href="#" class="sso-btn" onclick="startLoading()">
+                <i class="fab fa-google"></i> Sign in with Google
+            </a>
+        </div>
 
-        <button class="btn-auth btn-google" onclick="googleSignIn()">CONTINUE WITH GOOGLE</button>
+        <div class="divider">OR USE TERMINAL KEY</div>
 
-        <a class="toggle-text" onclick="toggleMode()">
-            Don't have an account? <span id="toggle-link">Sign Up</span>
-        </a>
+        <div class="input-group">
+            <input type="text" placeholder="Institutional ID">
+        </div>
+
+        <div class="input-group">
+            <input type="password" placeholder="Terminal Key">
+        </div>
+
+        <button class="btn-login" id="loginBtn" onclick="startLoading()">Initialize Session</button>
+        
+        <div id="loading-zone">
+            <p style="color: var(--neon-blue); font-size: 0.6rem; margin-bottom: 8px;">ENCRYPTING TUNNEL...</p>
+            <div class="progress-bg"><div class="progress-fill" id="fill"></div></div>
+        </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
-            authDomain: "dbautomaters.firebaseapp.com",
-            projectId: "dbautomaters",
-            storageBucket: "dbautomaters.firebasestorage.app",
-            messagingSenderId: "979994954651",
-            appId: "1:979994954651:web:476730aa83893ed7716f3e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        let isSignUp = false;
-
-        function toggleMode() {
-            isSignUp = !isSignUp;
-            document.getElementById('auth-title').innerText = isSignUp ? "CREATE ACCOUNT" : "TERMINAL ACCESS";
-            document.getElementById('auth-btn').innerText = isSignUp ? "REGISTER NOW" : "LOGIN / SIGN UP";
-            document.getElementById('toggle-link').innerText = isSignUp ? "Login" : "Sign Up";
-            document.querySelector('.toggle-text').firstChild.textContent = isSignUp ? "Already have an account? " : "Don't have an account? ";
-        }
-
-        async function handleAuth() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-
-            if(!email || !pass) return alert("Please fill all fields");
-
-            try {
-                if(isSignUp) {
-                    await auth.createUserWithEmailAndPassword(email, pass);
-                    alert("Account Created Successfully!");
+        function startLoading() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('loading-zone').style.display = 'block';
+            let fill = document.getElementById('fill');
+            let width = 0;
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    window.location.href = 'trading.html';
                 } else {
-                    await auth.signInWithEmailAndPassword(email, pass);
+                    width += Math.random() * 5;
+                    fill.style.width = width + '%';
                 }
-                window.location.href = "trading.html";
-            } catch (error) {
-                alert(error.message);
-            }
+            }, 100);
         }
 
-        function googleSignIn() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then(() => window.location.href = "trading.html")
-                .catch(err => alert(err.message));
+        // Background Stars Animation
+        const bg = document.getElementById('particles');
+        for (let i = 0; i < 40; i++) {
+            const star = document.createElement('div');
+            star.style.position = 'absolute';
+            star.style.background = 'white';
+            star.style.width = '1px';
+            star.style.height = '1px';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.opacity = Math.random();
+            star.animate([{ transform: 'scale(0)' }, { transform: 'scale(1.5)' }], 
+                { duration: 2000 + Math.random() * 2000, iterations: Infinity, direction: 'alternate' });
+            bg.appendChild(star);
         }
     </script>
 </body>
