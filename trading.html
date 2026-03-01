@@ -28,8 +28,17 @@
 
         /* --- LAYOUT --- */
         body { margin: 0; background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .header { height: 80px; background: #000; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .brand-pill { padding: 10px 30px; border: 2px solid var(--neon-yellow); border-radius: 50px; color: var(--neon-yellow); font-weight: 900; letter-spacing: 2px; background: rgba(254, 254, 0, 0.05); box-shadow: 0 0 20px rgba(254, 254, 0, 0.3); }
+        
+        .header { 
+            height: 100px; background: #000; border-bottom: 1px solid #222; 
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px; 
+        }
+        
+        .brand-pill {
+            padding: 10px 30px; border: 2px solid var(--neon-yellow); border-radius: 50px;
+            color: var(--neon-yellow); font-weight: 900; letter-spacing: 2px;
+            background: rgba(254, 254, 0, 0.05); box-shadow: 0 0 20px rgba(254, 254, 0, 0.3);
+        }
 
         .workspace { display: flex; flex: 1; padding: 20px; gap: 20px; }
 
@@ -39,18 +48,41 @@
         .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-lime); }
         .card h4 { margin: 0 0 15px 0; font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- TERMINAL MAIN --- */
-        .terminal-main { flex: 1; background: #000; border: 1px solid #222; border-radius: 20px; display: flex; flex-direction: column; padding: 20px; }
-        #log-container { flex: 1; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--neon-lime); overflow-y: auto; line-height: 1.6; background: #050505; padding: 15px; border-radius: 10px; }
+        /* --- TRADING CONSOLE (Main Area) --- */
+        .terminal-main { 
+            flex: 1; background: #000; border: 1px solid #222; border-radius: 20px; 
+            display: flex; flex-direction: column; padding: 20px; box-shadow: inset 0 0 30px rgba(0, 210, 255, 0.05);
+        }
 
-        /* --- INPUTS & BUTTONS --- */
-        input, select { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; }
+        /* --- TRADING PARAMETERS --- */
+        .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        
+        .param-group { display: flex; flex-direction: column; gap: 5px; }
+        .param-group label { font-size: 0.65rem; color: #777; text-transform: uppercase; }
+
+        /* Toggles */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--neon-lime); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- INPUTS & PILLS --- */
+        input, select { 
+            width: 100%; padding: 12px; margin-bottom: 5px; background: #000; 
+            border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; font-size: 0.8rem;
+        }
+        input:focus { border-color: var(--neon-blue); outline: none; }
+
         .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-lime { background: var(--neon-lime); color: black; box-shadow: 0 0 15px rgba(57, 255, 20, 0.3); }
         .btn-blue { background: var(--neon-blue); color: black; box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
         .btn-outline { background: transparent; border: 1px solid #444; color: white; }
-        .status-tag { font-size: 0.6rem; padding: 4px 12px; border-radius: 50px; font-weight: bold; border: 1px solid #333; display: inline-block; margin-top: 10px; }
-        .active { color: var(--neon-lime); border-color: var(--neon-lime); }
+        .btn:hover { transform: scale(1.02); filter: brightness(1.2); }
+
+        .status-tag { font-size: 0.6rem; padding: 4px 12px; border-radius: 50px; font-weight: bold; border: 1px solid #333; }
+        .active { color: var(--neon-lime); border-color: var(--neon-lime); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
     </style>
 </head>
 <body>
@@ -62,58 +94,88 @@
 
     <div class="header">
         <div class="brand-pill">DB EA TERMINAL</div>
-        <div style="display: flex; gap: 20px; align-items: center;">
+        
+        <div style="display: flex; gap: 30px; align-items: center;">
             <div style="text-align: right;">
-                <div style="font-size: 0.6rem; color: #555;">LIVE BALANCE</div>
-                <div id="user-balance" style="color: var(--neon-blue); font-weight: 900; font-size: 1.2rem;">$0.00</div>
+                <div style="font-size: 0.6rem; color: #555;">SESSION PROFIT</div>
+                <div id="session-profit" style="color: var(--neon-lime); font-weight: 900; font-size: 1.2rem;">+$0.00</div>
             </div>
-            <button onclick="logout()" class="btn-outline" style="padding: 8px 15px; border-radius: 50px; font-size: 0.7rem;">EXIT</button>
+            <div style="width: 120px;">
+                <div style="font-size: 0.6rem; color: #555; text-align:center;">V75 PULSE</div>
+                <div style="height: 8px; background: #222; border-radius: 10px; margin-top: 5px; overflow: hidden; display: flex;">
+                    <div id="sentiment-bull" style="width: 65%; background: var(--neon-lime); transition: 1s;"></div>
+                    <div id="sentiment-bear" style="width: 35%; background: #ff4444; transition: 1s;"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="text-align: right;">
+                    <div style="font-size: 0.6rem; color: #555;">WALLET</div>
+                    <div id="user-balance" style="color: var(--neon-blue); font-weight: 900; font-size: 1.2rem;">$0.00</div>
+                </div>
+                <button onclick="logout()" class="btn-outline" style="padding: 8px 15px; border-radius: 50px; font-size: 0.7rem;">EXIT</button>
+            </div>
         </div>
     </div>
 
     <div class="workspace">
+        <div class="terminal-main">
+            <div class="card" style="flex:1; border: none; background: transparent; padding: 0;">
+                <h4 style="border-bottom: 1px solid #222; padding-bottom: 10px;">Deriv Speedbot Console</h4>
+                
+                <input type="text" id="deriv-market" placeholder="SELECT MARKET (e.g., Volatility 75)">
+                
+                <div class="params-grid">
+                    <div class="param-group">
+                        <label>Ticks</label>
+                        <input type="number" id="deriv-ticks" value="1">
+                    </div>
+                    <div class="param-group">
+                        <label>Stake (USD)</label>
+                        <input type="number" id="deriv-stake" value="0.5">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; margin-top: 15px; font-size: 0.7rem; color: #888;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                        Alternate Even/Odd
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        Enable Martingale
+                    </div>
+                </div>
+
+                <div class="param-group" style="margin-top: 15px;">
+                    <label>Martingale Multiplier</label>
+                    <input type="number" id="deriv-martingale" value="1.15">
+                </div>
+
+                <button class="btn btn-blue" style="margin-top: 20px;">START AI SPEEDBOT</button>
+                
+                <div id="trade-log" style="margin-top: 15px; font-size: 0.7rem; color: #555; text-align: center;">Ticks Processed: 0 | Last Digit: -</div>
+            </div>
+        </div>
+
         <div class="sidebar">
             <div class="card">
                 <h4>Subscription</h4>
                 <div style="font-size: 0.9rem; margin-bottom: 10px;">Deriv EA Weekly</div>
-                <button class="btn btn-blue" id="activate-btn" onclick="activateEA()">Activate for $2.50</button>
-                <div id="ea-status" class="status-tag">DISCONNECTED</div>
+                <button class="btn btn-outline" id="activate-btn" onclick="activateEA()">Activate for $2.50</button>
+                <div id="ea-status" class="status-tag" style="margin-top: 15px;">DISCONNECTED</div>
             </div>
 
             <div class="card" style="border-left-color: var(--neon-blue);">
                 <h4>Deriv Account Link</h4>
                 <input type="text" id="deriv-id" placeholder="Deriv CR Number / MT5 ID">
                 <input type="password" id="deriv-pass" placeholder="Trading Password">
-                <select id="deriv-server">
-                    <option value="Deriv-Server">Deriv-Server (Real)</option>
-                    <option value="Deriv-Demo">Deriv-Demo</option>
-                </select>
-                <button class="btn btn-outline" onclick="saveDeriv()">Sync Deriv Account</button>
+                <button class="btn btn-blue" onclick="saveDeriv()">Sync Deriv Account</button>
             </div>
 
             <div class="card">
                 <h4>Wallet</h4>
                 <button class="btn btn-lime" onclick="alert('Redirecting to M-Pesa...')">Deposit via M-Pesa</button>
-            </div>
-        </div>
-
-        <div class="terminal-main">
-            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                <div class="card" style="flex: 1; border-left: 3px solid var(--neon-blue);">
-                    <h4 style="margin:0;">Session Profit</h4>
-                    <div id="session-profit" style="font-size: 1.8rem; font-weight: 900; color: var(--neon-lime);">+$0.00</div>
-                </div>
-                <div class="card" style="flex: 1; border-left: 3px solid var(--neon-yellow);">
-                    <h4 style="margin:0;">V75 Market Sentiment</h4>
-                    <div style="height: 10px; background: #222; border-radius: 10px; margin-top: 15px; overflow: hidden; display: flex;">
-                        <div id="sentiment-bull" style="width: 50%; background: var(--neon-lime); transition: 1s;"></div>
-                        <div id="sentiment-bear" style="width: 50%; background: #ff4444; transition: 1s;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="log-container">
-                <div>[SYSTEM] Initializing DB Algorithmic Core...</div>
             </div>
         </div>
     </div>
@@ -122,7 +184,7 @@
         // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
-            authDomain: "dbautomaters.firebaseapp.app",
+            authDomain: "dbautomaters.firebaseapp.com",
             projectId: "dbautomaters",
             storageBucket: "dbautomaters.firebasestorage.app",
             messagingSenderId: "979994954651",
@@ -140,59 +202,47 @@
             }, 2000);
         });
 
-        // LIVE FEED LOGIC
-        let totalProfit = 0.00;
-        function addLog(msg) {
-            const container = document.getElementById('log-container');
-            const div = document.createElement('div');
-            div.innerHTML = `<span style="color: #444;">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function startLiveFeed() {
-            const logs = ["Analyzing Volatility 75...", "Scanning Boom 500 Spikes...", "Pattern Recognized: V100 (1s)", "Updating Stop Loss..."];
-            setInterval(() => {
-                addLog(logs[Math.floor(Math.random() * logs.length)]);
-                if(Math.random() > 0.8) {
-                    let win = (Math.random() * 3).toFixed(2);
-                    totalProfit += parseFloat(win);
-                    document.getElementById('session-profit').innerText = `+$${totalProfit.toFixed(2)}`;
-                    addLog(`<span style="color: var(--neon-lime);">[EXECUTION] Profit Target Hit: +$${win}</span>`);
-                    document.getElementById('sentiment-bull').style.width = Math.floor(Math.random() * 100) + "%";
-                }
-            }, 4000);
-        }
-
-        // DATABASE SYNC
+        // SYNC DATA & ACTIVATE UI
         auth.onAuthStateChanged(user => {
-            if (!user) window.location.href = "login.html";
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                const data = doc.data();
-                document.getElementById('user-balance').innerText = `$${data?.balance?.toFixed(2) || '0.00'}`;
-                if(data?.ea_active) {
-                    const tag = document.getElementById('ea-status');
-                    tag.innerText = "EA ACTIVE"; tag.classList.add('active');
-                    document.getElementById('activate-btn').disabled = true;
-                    startLiveFeed();
-                }
-            });
+            if (!user) { window.location.href = "login.html"; }
+            else {
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.getElementById('user-balance').innerText = `$${data.balance.toFixed(2)}`;
+                        if(data.ea_active) {
+                            const tag = document.getElementById('ea-status');
+                            tag.innerText = "EA ACTIVE";
+                            tag.classList.add('active');
+                            // Now you would start your actual Deriv WebSocket connection here
+                        }
+                    } else {
+                        db.collection("users").doc(user.uid).set({ balance: 0.0, ea_active: false });
+                    }
+                });
+            }
         });
 
         async function saveDeriv() {
             const user = auth.currentUser;
-            const creds = { id: document.getElementById('deriv-id').value, pass: document.getElementById('deriv-pass').value, server: document.getElementById('deriv-server').value };
-            await db.collection("users").doc(user.uid).update({ deriv_creds: creds });
-            alert("Deriv account linked!");
+            const details = { 
+                id: document.getElementById('deriv-id').value, 
+                pass: document.getElementById('deriv-pass').value 
+            };
+            await db.collection("users").doc(user.uid).update({ deriv_creds: details });
+            alert("Deriv account synced.");
         }
 
         async function activateEA() {
             const user = auth.currentUser;
             const doc = await db.collection("users").doc(user.uid).get();
             if(doc.data().balance >= 2.50) {
-                await db.collection("users").doc(user.uid).update({ balance: doc.data().balance - 2.50, ea_active: true });
-                addLog("Account Activated. Initializing Trading Nerves...");
-            } else { alert("Minimum $2.50 required."); }
+                await db.collection("users").doc(user.uid).update({ 
+                    balance: doc.data().balance - 2.50, 
+                    ea_active: true 
+                });
+                alert("EA Activated!");
+            } else { alert("Insufficient funds."); }
         }
 
         function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
