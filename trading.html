@@ -3,7 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB EA | Institutional Terminal</title>
+    <title>DB EA | Institutional Terminal</title><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB EA | Dark Glow Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg-deep: #050505; 
+            --neon-yellow: #fefe00; 
+            --neon-blue: #00d2ff; 
+            --neon-lime: #39ff14;
+            --dark-pill: #121212;
+        }
+
+        body { 
+            margin: 0; background: var(--bg-deep); color: white; 
+            font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh;
+        }
+
+        /* --- GLOWING PILL NAVIGATION --- */
+        .top-nav {
+            display: flex; justify-content: center; gap: 15px; padding: 20px;
+            background: rgba(0,0,0,0.8); border-bottom: 1px solid #222;
+        }
+        .nav-pill {
+            padding: 12px 25px; border-radius: 50px; background: var(--dark-pill);
+            color: var(--neon-blue); font-family: 'Orbitron', sans-serif; font-size: 11px;
+            text-transform: uppercase; cursor: pointer; border: 1px solid #333;
+            transition: 0.3s; text-decoration: none;
+        }
+        .nav-pill.active {
+            border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue);
+            color: white;
+        }
+        .nav-pill:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+
+        /* --- MAIN LAYOUT --- */
+        .workspace { display: grid; grid-template-columns: 1fr 350px; gap: 25px; padding: 25px; }
+
+        /* --- SPEEDBOT PILL PANEL --- */
+        .main-card {
+            background: var(--dark-pill); border-radius: 40px; padding: 40px;
+            border: 1px solid #222; position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .glow-border-lime { border: 1px solid var(--neon-lime); box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); }
+
+        .section-header { 
+            color: var(--neon-yellow); font-family: 'Orbitron', sans-serif; 
+            font-size: 14px; margin-bottom: 30px; letter-spacing: 2px;
+        }
+
+        /* --- PILL INPUTS --- */
+        .pill-group { margin-bottom: 25px; }
+        label { color: var(--neon-blue); font-size: 10px; text-transform: uppercase; margin-left: 15px; margin-bottom: 8px; display: block; }
+        select, input {
+            width: 100%; padding: 15px 25px; background: #000; border: 1px solid #333;
+            border-radius: 50px; color: white; outline: none; font-size: 13px;
+        }
+        select:focus, input:focus { border-color: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
+
+        /* --- ACTION BUTTON --- */
+        .btn-action {
+            width: 100%; padding: 20px; border-radius: 50px; background: var(--neon-lime);
+            color: black; font-weight: 900; font-family: 'Orbitron', sans-serif;
+            border: none; cursor: pointer; transition: 0.3s; font-size: 14px;
+            box-shadow: 0 0 20px var(--neon-lime);
+        }
+        .btn-action:hover { transform: scale(1.02); filter: brightness(1.2); }
+
+        /* --- SIDEBAR SETTINGS --- */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .settings-pill {
+            background: var(--dark-pill); border-radius: 30px; padding: 25px;
+            border: 1px solid #222;
+        }
+        .setting-item {
+            display: flex; justify-content: space-between; padding: 15px 0;
+            color: #888; border-bottom: 1px solid #222; font-size: 12px; cursor: pointer;
+        }
+        .setting-item:hover { color: var(--neon-blue); }
+
+        #console { 
+            color: var(--neon-lime); font-family: monospace; font-size: 11px; 
+            margin-top: 20px; height: 100px; overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-pill" style="color: var(--neon-yellow); border-color: var(--neon-yellow);">Home</a>
+        <div class="nav-pill" onclick="switchTab('dashboard')">Dashboard</div>
+        <div class="nav-pill" onclick="switchTab('bot-editor')">Bot Editor</div>
+        <div class="nav-pill active" onclick="switchTab('speedbot')">Speedbot</div>
+        <div class="nav-pill" onclick="switchTab('forex')">Forex Bot</div>
+    </nav>
+
+    <div class="workspace">
+        <div class="main-card glow-border-lime">
+            <div class="section-header">EXECUTE TICK ALGORITHM</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pill-group">
+                    <label>Active Market</label>
+                    <select id="market">
+                        <option value="1HZ10V">Volatility 10 (1s)</option>
+                        <option value="R_75">Volatility 75 Index</option>
+                    </select>
+                </div>
+                <div class="pill-group">
+                    <label>Signal Type</label>
+                    <select id="prediction">
+                        <option value="DIGITEVEN">Even Mode</option>
+                        <option value="DIGITODD">Odd Mode</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pill-group">
+                    <label>Ticks</label>
+                    <input type="number" id="ticks" value="1">
+                </div>
+                <div class="pill-group">
+                    <label>Stake (USD)</label>
+                    <input type="number" id="stake" value="0.35">
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="runEngine()">INITIATE SPEEDBOT</button>
+            <div id="console">> [NODE] Systems Operational...</div>
+        </div>
+
+        <div class="sidebar">
+            <div class="settings-pill" style="border-color: var(--neon-blue);">
+                <div style="color: var(--neon-blue); font-weight: 900; font-size: 11px; margin-bottom: 15px;">SECURE ACCOUNT</div>
+                <div class="setting-item">Email Identity <span>›</span></div>
+                <div class="setting-item">Security Keys (2FA) <span>›</span></div>
+                <div class="setting-item">Trading Controls <span>›</span></div>
+                <div class="setting-item" style="border:none; color: var(--neon-yellow);">Account Limits <span>›</span></div>
+            </div>
+
+            <div class="settings-pill">
+                <div style="color: #666; font-size: 10px;">WALLET BALANCE</div>
+                <div id="balance" style="font-size: 24px; font-weight: 900; color: white; margin-top: 10px;">0.00 USD</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+        // Your Integrated Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
+            authDomain: "dbautomaters.firebaseapp.com",
+            projectId: "dbautomaters",
+            storageBucket: "dbautomaters.firebasestorage.app",
+            messagingSenderId: "979994954651",
+            appId: "1:979994954651:web:476730aa83893ed7716f3e"
+        };
+        initializeApp(firebaseConfig);
+
+        const TOKEN = 'Kc9DWs8mdnEQRri'; 
+        let ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+
+        ws.onopen = () => ws.send(JSON.stringify({ authorize: TOKEN }));
+        ws.onmessage = (msg) => {
+            const data = JSON.parse(msg.data);
+            if (data.msg_type === 'authorize') {
+                document.getElementById('balance').innerText = data.authorize.balance + " USD";
+            }
+            if (data.msg_type === 'buy') {
+                updateConsole("ALGO SUCCESS: ID " + data.buy.contract_id);
+            }
+        };
+
+        window.runEngine = () => {
+            const stake = document.getElementById('stake').value;
+            updateConsole("Injecting trade order...");
+            ws.send(JSON.stringify({
+                buy: 1, price: parseFloat(stake),
+                parameters: {
+                    amount: parseFloat(stake),
+                    basis: 'stake',
+                    contract_type: document.getElementById('prediction').value,
+                    currency: 'USD',
+                    duration: parseInt(document.getElementById('ticks').value),
+                    duration_unit: 't',
+                    symbol: document.getElementById('market').value
+                }
+            }));
+        };
+
+        function updateConsole(txt) {
+            const c = document.getElementById('console');
+            c.innerHTML += `<div>> ${txt}</div>`;
+            c.scrollTop = c.scrollHeight;
+        }
+
+        window.switchTab = (tab) => {
+            updateConsole("Switching to " + tab + " node...");
+            // Logic to hide/show specific tab content would go here
+        };
+    </script>
+</body>
+</html>
     <style>
         :root { 
             --neon-yellow: #fefe00; --neon-lime: #39ff14; --neon-blue: #00d2ff; 
