@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DB EA | Professional Dark Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBAutomaters | Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -15,104 +16,104 @@
 
         body { 
             margin: 0; background: var(--bg-deep); color: white; 
-            font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh;
+            font-family: 'Inter', sans-serif; height: 100vh;
         }
 
-        /* --- TOP PILL NAVIGATION (Matches cf532208) --- */
+        /* --- MOBILE-FRIENDLY NAVIGATION --- */
         .nav-container {
-            display: flex; justify-content: center; gap: 12px; padding: 25px;
-            background: linear-gradient(180deg, rgba(0,210,255,0.05) 0%, transparent 100%);
+            display: flex; overflow-x: auto; gap: 10px; padding: 15px;
+            background: rgba(0,0,0,0.9); border-bottom: 1px solid #1a1a1a;
+            scrollbar-width: none; /* Hide scrollbar for clean look */
         }
         .nav-pill {
-            padding: 12px 28px; border-radius: 50px; background: var(--pill-dark);
+            flex: 0 0 auto; padding: 10px 20px; border-radius: 50px; background: var(--pill-dark);
             color: var(--neon-blue); font-family: 'Orbitron', sans-serif; font-size: 10px;
-            border: 1px solid #222; cursor: pointer; transition: 0.4s; text-transform: uppercase;
+            border: 1px solid #222; cursor: pointer; text-transform: uppercase;
         }
-        .nav-pill:hover, .nav-pill.active {
-            border-color: var(--neon-yellow); color: var(--neon-yellow);
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.3);
+        .nav-pill.active { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+
+        /* --- RESPONSIVE WORKSPACE --- */
+        .workspace { 
+            display: flex; flex-direction: column; gap: 20px; padding: 20px;
+            overflow-y: auto; height: calc(100vh - 80px);
         }
 
-        /* --- WORKSPACE LAYOUT --- */
-        .workspace { display: grid; grid-template-columns: 1fr 360px; gap: 30px; padding: 0 30px 30px; }
+        /* Desktop Layout Override */
+        @media (min-width: 992px) {
+            .workspace { display: grid; grid-template-columns: 1fr 360px; padding: 30px; }
+        }
 
-        /* --- MAIN PILL PANEL (Matches 1db128a7) --- */
+        /* --- THE MAIN PILL TERMINAL --- */
         .main-terminal {
-            background: var(--pill-dark); border-radius: 45px; padding: 45px;
-            border: 2px solid var(--neon-lime); position: relative;
-            box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+            background: var(--pill-dark); border-radius: 35px; padding: 25px;
+            border: 2px solid var(--neon-lime); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15);
         }
 
         .terminal-header {
             color: var(--neon-blue); font-family: 'Orbitron', sans-serif;
-            font-size: 12px; letter-spacing: 3px; margin-bottom: 35px;
+            font-size: 11px; letter-spacing: 2px; margin-bottom: 25px; text-align: center;
         }
 
-        /* --- INPUT PILLS (Transition Blue to Yellow) --- */
-        .input-pill-wrapper { margin-bottom: 25px; }
-        label { color: var(--neon-blue); font-size: 9px; margin-left: 20px; margin-bottom: 8px; display: block; letter-spacing: 1px; }
+        /* RESPONSIVE FORM GRID */
+        .form-row { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (min-width: 600px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+        label { color: var(--neon-blue); font-size: 9px; margin-left: 15px; margin-bottom: 5px; display: block; }
         
         select, input {
-            width: 100%; padding: 16px 28px; background: #000; border: 1px solid #222;
-            border-radius: 50px; color: var(--neon-yellow); outline: none; font-size: 13px;
-            transition: 0.3s;
-        }
-        select:focus, input:focus {
-            border-color: var(--neon-yellow);
-            box-shadow: 0 0 15px rgba(254, 254, 0, 0.2);
+            width: 100%; padding: 14px 22px; background: #000; border: 1px solid #222;
+            border-radius: 50px; color: var(--neon-yellow); outline: none; font-size: 14px;
         }
 
-        /* --- ACTION BUTTON --- */
         .btn-execute {
-            width: 100%; padding: 22px; border-radius: 50px; background: var(--neon-lime);
+            width: 100%; padding: 18px; border-radius: 50px; background: var(--neon-lime);
             color: black; font-weight: 900; font-family: 'Orbitron', sans-serif;
-            border: none; cursor: pointer; box-shadow: 0 0 25px var(--neon-lime);
-            margin-top: 20px; transition: 0.3s;
+            border: none; cursor: pointer; box-shadow: 0 0 20px var(--neon-lime);
+            margin-top: 15px; font-size: 12px;
         }
-        .btn-execute:hover { transform: translateY(-3px); filter: brightness(1.2); }
 
-        /* --- SIDEBAR SETTINGS (Matches cf532208) --- */
-        .sidebar { display: flex; flex-direction: column; gap: 25px; }
+        /* --- SIDEBAR COMPONENTS --- */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .settings-pill-box {
-            background: var(--pill-dark); border-radius: 35px; padding: 30px;
+            background: var(--pill-dark); border-radius: 30px; padding: 20px;
             border: 1px solid #222;
         }
-        .account-item {
-            display: flex; justify-content: space-between; padding: 16px 0;
-            border-bottom: 1px solid #1a1a1a; color: #888; font-size: 12px; cursor: pointer;
-        }
-        .account-item span { color: var(--neon-blue); font-weight: bold; }
-        .account-item:hover { color: var(--neon-yellow); }
 
-        .balance-glow {
-            font-size: 26px; font-weight: 900; color: white;
-            text-shadow: 0 0 10px var(--neon-blue); margin-top: 10px;
+        .balance-display {
+            font-size: 24px; font-weight: 900; color: white;
+            text-shadow: 0 0 10px var(--neon-blue); margin-top: 5px;
         }
+
+        .account-item {
+            display: flex; justify-content: space-between; padding: 12px 0;
+            border-bottom: 1px solid #1a1a1a; color: #888; font-size: 11px;
+        }
+        .account-item span { color: var(--neon-blue); }
     </style>
 </head>
 <body>
 
     <nav class="nav-container">
-        <div class="nav-pill" onclick="tab('dash')">Dashboard</div>
-        <div class="nav-pill" onclick="tab('edit')">Bot Editor</div>
-        <div class="nav-pill active" onclick="tab('speed')">Speedbot</div>
-        <div class="nav-pill" onclick="tab('forex')">Forex Bot</div>
+        <div class="nav-pill">Dashboard</div>
+        <div class="nav-pill">Bot Editor</div>
+        <div class="nav-pill active">Speedbot</div>
+        <div class="nav-pill">Forex Bot</div>
     </nav>
 
     <div class="workspace">
         <div class="main-terminal">
-            <div class="terminal-header">ALGORITHM EXECUTION NODE</div>
+            <div class="terminal-header">DBAUTOMATERS ENGINE</div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="input-pill-wrapper">
-                    <label>ASSET CLASS</label>
+            <div class="form-row">
+                <div>
+                    <label>MARKET</label>
                     <select id="market">
-                        <option value="1HZ10V">Volatility 10 (1s) Index</option>
+                        <option value="1HZ10V">Volatility 10 (1s)</option>
                         <option value="R_75">Volatility 75 Index</option>
                     </select>
                 </div>
-                <div class="input-pill-wrapper">
-                    <label>PREDICTION</label>
+                <div>
+                    <label>CONTRACT</label>
                     <select id="contract">
                         <option value="DIGITEVEN">Even</option>
                         <option value="DIGITODD">Odd</option>
@@ -120,33 +121,26 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="input-pill-wrapper">
-                    <label>TICKS</label>
-                    <input type="number" id="ticks" value="1">
-                </div>
-                <div class="input-pill-wrapper">
-                    <label>STAKE (USD)</label>
-                    <input type="number" id="stake" value="0.35">
-                </div>
+            <div class="form-row">
+                <div><label>TICKS</label><input type="number" id="ticks" value="1"></div>
+                <div><label>STAKE (USD)</label><input type="number" id="stake" value="0.35"></div>
             </div>
 
-            <button class="btn-execute" onclick="launchBot()">START AI SPEEDBOT</button>
-            <div id="log" style="color:var(--neon-lime); font-family:monospace; font-size:11px; margin-top:25px;">> [SYSTEM] Authorization Successful...</div>
+            <button class="btn-execute" onclick="launchBot()">INITIALIZE TRADE</button>
+            <div id="log" style="color:var(--neon-lime); font-family:monospace; font-size:10px; margin-top:20px; height: 60px; overflow: hidden;">
+                > [SYSTEM] Waiting for Input...
+            </div>
         </div>
 
         <div class="sidebar">
-            <div class="settings-pill-box">
-                <div style="color: var(--neon-blue); font-size: 10px; font-weight: 900; margin-bottom: 20px;">SECURITY STATUS</div>
-                <div class="account-item">Email Address <span>SECURE</span></div>
-                <div class="account-item">2FA Status <span>ACTIVE</span></div>
-                <div class="account-item">Trading Limits <span>UNSET</span></div>
-                <div class="account-item" style="border:none">Session Link <span>STABLE</span></div>
-            </div>
-
             <div class="settings-pill-box" style="border-color: var(--neon-blue);">
                 <div style="color: var(--neon-yellow); font-size: 10px; font-weight: 900;">LIVE EQUITY</div>
-                <div class="balance-glow" id="balance">0.00 USD</div>
+                <div class="balance-display" id="balance">0.00 USD</div>
+            </div>
+
+            <div class="settings-pill-box">
+                <div class="account-item">2FA <span>ACTIVE</span></div>
+                <div class="account-item" style="border:none">Session <span>STABLE</span></div>
             </div>
         </div>
     </div>
@@ -154,7 +148,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         
-        // YOUR DBAutomaters SDK Integration
         const firebaseConfig = {
             apiKey: "AIzaSyABhnkxmw_S5VamB0wJVRB1MUTOI4_Tc9s",
             authDomain: "dbautomaters.firebaseapp.com",
@@ -165,7 +158,6 @@
         };
         initializeApp(firebaseConfig);
 
-        // DERIV WebSocket Integration
         const TOKEN = 'Kc9DWs8mdnEQRri'; 
         let ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
 
@@ -182,19 +174,14 @@
             ws.send(JSON.stringify({
                 buy: 1, price: parseFloat(stake),
                 parameters: {
-                    amount: parseFloat(stake),
-                    basis: 'stake',
+                    amount: parseFloat(stake), basis: 'stake',
                     contract_type: document.getElementById('contract').value,
-                    currency: 'USD',
-                    duration: parseInt(document.getElementById('ticks').value),
-                    duration_unit: 't',
-                    symbol: document.getElementById('market').value
+                    currency: 'USD', duration: parseInt(document.getElementById('ticks').value),
+                    duration_unit: 't', symbol: document.getElementById('market').value
                 }
             }));
-            document.getElementById('log').innerHTML += "<div>> Trade Injected Successfully...</div>";
+            document.getElementById('log').innerHTML = "> [NODE] Trade Injected...";
         };
-
-        window.tab = (id) => { console.log("Switching to Node: " + id); };
     </script>
 </body>
 </html>
